@@ -72,11 +72,12 @@ namespace ga
         Individual *best;
         std::vector<Individual> individuals;
 
-        Population(int size)
+        Population(int size, int n)
         {
             this->generation = 0;
-            this->permutator = Permutator(size);
-            this->generate_individuals();
+            this->size = size;
+            this->permutator = Permutator(n);
+            this->generate_individuals(n);
         }
 
         void map(void (*func)(Individual *))
@@ -87,14 +88,18 @@ namespace ga
             }
         }
 
-        void generate_individuals()
+        void generate_individuals(int n)
         {
             this->permutator.shuffle();
 
             for (int i = 0; i < this->size; i++)
             {
-                this->permutator.shuffle();
-                this->individuals.push_back(this->permutator.vector);
+                for (int j = 0; j < n; j++)
+                {
+                    this->permutator.shuffle();
+                    Individual individual(this->permutator.vector);
+                    this->individuals.push_back(individual);
+                }
             }
         }
 
