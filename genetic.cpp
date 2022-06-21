@@ -50,14 +50,28 @@ namespace ga
 
     class Individual
     {
+    private:
+        void generateBreakpoints(int qty)
+        {
+            int lowerLimit = 1;
+            int upperLimit = this->chromossome.genes.size() - 1;
+
+            for (int i = 0; i < qty; i++)
+            {
+                int breakpoint = lowerLimit + (rand() % upperLimit);
+                this->chromossome.genes.push_back(breakpoint);
+            }
+        }
+
     public:
         int fitness;
         Chromossome chromossome;
 
-        Individual(std::vector<int> genes)
+        Individual(std::vector<int> genes, int qtyBreaks)
         {
             this->fitness = 0;
             this->chromossome.genes = genes;
+            this->generateBreakpoints(qtyBreaks);
         }
     };
 
@@ -69,15 +83,16 @@ namespace ga
     public:
         int generation;
         int size;
+        int mutation_rate;
         Individual *best;
         std::vector<Individual> individuals;
 
-        Population(int size, int n)
+        Population(int size, int n, int qtyBreaks)
         {
             this->generation = 0;
             this->size = size;
             this->permutator = Permutator(n);
-            this->generate_individuals();
+            this->generate_individuals(qtyBreaks);
         }
 
         void map(void (*func)(Individual *))
@@ -88,19 +103,16 @@ namespace ga
             }
         }
 
-        void generate_individuals()
+        void generate_individuals(int qtyBreaks)
         {
             this->permutator.shuffle();
 
             for (int i = 0; i < this->size; i++)
             {
                 this->permutator.shuffle();
-                Individual individual(this->permutator.vector);
+                Individual individual(this->permutator.vector, qtyBreaks);
                 this->individuals.push_back(individual);
             }
         }
-
-        void mutation();
-        void crossover();
     };
 }
