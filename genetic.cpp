@@ -77,7 +77,7 @@ namespace ga
             this->generation = 0;
             this->size = size;
             this->permutator = Permutator(n);
-            this->generate_individuals(n);
+            this->generate_individuals();
         }
 
         void map(void (*func)(Individual *))
@@ -88,18 +88,15 @@ namespace ga
             }
         }
 
-        void generate_individuals(int n)
+        void generate_individuals()
         {
             this->permutator.shuffle();
 
             for (int i = 0; i < this->size; i++)
             {
-                for (int j = 0; j < n; j++)
-                {
-                    this->permutator.shuffle();
-                    Individual individual(this->permutator.vector);
-                    this->individuals.push_back(individual);
-                }
+                this->permutator.shuffle();
+                Individual individual(this->permutator.vector);
+                this->individuals.push_back(individual);
             }
         }
 
