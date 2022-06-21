@@ -1,14 +1,23 @@
 #include <iostream>
 #include "genetic.cpp"
 
+void print_cromossomes(int chromossome){
+    std::cout << chromossome;
+}
+
+void print_individual(ga::Individual *individual){
+    individual->genes.map(print_cromossomes);
+    std::cout << '\n';
+}
+
 int main()
 {
-    ga::Population p(10);
+    int popSize = 5;
+    int n = 100;
 
-    for (int i = 0; i < p.individuals[0].genes.chromossomes.size(); i++)
-    {
-        std::cout << p.individuals[0].genes.chromossomes[i];
-    }
+    ga::Population p(popSize, n);
+
+    p.map(print_individual);
 
     return 0;
 }
