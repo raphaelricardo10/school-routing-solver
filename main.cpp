@@ -2,7 +2,7 @@
 #include "genetic.cpp"
 
 void print_cromossome(int chromossome){
-    std::cout << chromossome;
+    std::cout << chromossome << ' ';
 }
 
 void print_individual(ga::Individual *individual){
@@ -13,9 +13,10 @@ void print_individual(ga::Individual *individual){
 int main()
 {
     int popSize = 5;
-    int n = 100;
+    int qtyLocations = 10;
+    int qtyRoutes = 3;
 
-    ga::Population p(popSize, n);
+    ga::Population p(popSize, qtyLocations, qtyRoutes);
 
     p.map(print_individual);
 
