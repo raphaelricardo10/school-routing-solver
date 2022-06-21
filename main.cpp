@@ -1,12 +1,12 @@
 #include <iostream>
 #include "genetic.cpp"
 
-void print_cromossomes(int chromossome){
+void print_cromossome(int chromossome){
     std::cout << chromossome;
 }
 
 void print_individual(ga::Individual *individual){
-    individual->genes.map(print_cromossomes);
+    individual->genes.map(print_cromossome);
     std::cout << '\n';
 }
 
