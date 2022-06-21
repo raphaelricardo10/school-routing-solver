@@ -81,12 +81,13 @@ namespace ga
         Permutator permutator;
 
     public:
-        std::vector<std::vector<int>> distances;
         int generation;
         int size;
         int mutation_rate;
         Individual *best;
         std::vector<Individual> individuals;
+
+        Population() {}
 
         Population(int size, int n, int qtyBreaks)
         {
@@ -94,7 +95,6 @@ namespace ga
             this->size = size;
             this->permutator = Permutator(n);
             this->generate_individuals(qtyBreaks);
-            this->generate_distances(n);
         }
 
         void map(void (*func)(Individual *))
@@ -116,15 +116,20 @@ namespace ga
                 this->individuals.push_back(individual);
             }
         }
+    };
 
-        void generate_distances(int individualSize){
-            for(int i=0; i<individualSize; i++){
-                std::vector<int> v;
-                for(int j=0; j<i; j++){
-                    v.push_back(1 + (rand() % individualSize - 1));
-                }
-                this->distances.push_back(v);
-            }
+    class GeneticBase
+    {
+    public:
+        int maxGenerations;
+        Population population;
+
+        GeneticBase() {}
+
+        GeneticBase(int maxGenerations, int populationSize, int chromossomeSize, int qtyCromossomeBreaks)
+        {
+            this->maxGenerations = maxGenerations;
+            this->population = Population(populationSize, chromossomeSize, qtyCromossomeBreaks);
         }
     };
 }
