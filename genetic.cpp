@@ -54,10 +54,10 @@ namespace ga
         int fitness;
         Chromossome chromossome;
 
-        Individual(std::vector<int> chromossome)
+        Individual(std::vector<int> genes)
         {
             this->fitness = 0;
-            this->chromossome.genes = chromossome;
+            this->chromossome.genes = genes;
         }
     };
 
