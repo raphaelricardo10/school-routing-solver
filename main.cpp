@@ -6,7 +6,7 @@ void print_cromossome(int chromossome){
 }
 
 void print_individual(ga::Individual *individual){
-    individual->genes.map(print_cromossome);
+    individual->chromossome.map(print_cromossome);
     std::cout << '\n';
 }
 

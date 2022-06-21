@@ -34,14 +34,14 @@ namespace ga
         }
     };
 
-    class Gene
+    class Chromossome
     {
     public:
-        std::vector<int> chromossomes;
+        std::vector<int> genes;
 
         void map(void (*func)(int))
         {
-            for (auto i = this->chromossomes.begin(); i != this->chromossomes.end(); ++i)
+            for (auto i = this->genes.begin(); i != this->genes.end(); ++i)
             {
                 func(*i);
             }
@@ -52,12 +52,12 @@ namespace ga
     {
     public:
         int fitness;
-        Gene genes;
+        Chromossome chromossome;
 
-        Individual(std::vector<int> genes)
+        Individual(std::vector<int> chromossome)
         {
             this->fitness = 0;
-            this->genes.chromossomes = genes;
+            this->chromossome.genes = chromossome;
         }
     };
 
