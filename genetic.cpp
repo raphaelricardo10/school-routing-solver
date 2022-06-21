@@ -81,6 +81,7 @@ namespace ga
         Permutator permutator;
 
     public:
+        std::vector<std::vector<int>> distances;
         int generation;
         int size;
         int mutation_rate;
@@ -93,6 +94,7 @@ namespace ga
             this->size = size;
             this->permutator = Permutator(n);
             this->generate_individuals(qtyBreaks);
+            this->generate_distances(n);
         }
 
         void map(void (*func)(Individual *))
@@ -112,6 +114,16 @@ namespace ga
                 this->permutator.shuffle();
                 Individual individual(this->permutator.vector, qtyBreaks);
                 this->individuals.push_back(individual);
+            }
+        }
+
+        void generate_distances(int individualSize){
+            for(int i=0; i<individualSize; i++){
+                std::vector<int> v;
+                for(int j=0; j<i; j++){
+                    v.push_back(1 + (rand() % individualSize - 1));
+                }
+                this->distances.push_back(v);
             }
         }
     };
