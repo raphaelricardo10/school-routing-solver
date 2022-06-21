@@ -1,5 +1,5 @@
 #include <iostream>
-#include "genetic.cpp"
+#include "routes.cpp"
 
 void print_cromossome(int chromossome){
     std::cout << chromossome << ' ';
@@ -14,11 +14,20 @@ int main()
 {
     int popSize = 5;
     int qtyLocations = 10;
-    int qtyRoutes = 3;
+    int qtyRoutes = 3;                                           
+    int maxGenerations = 100;
 
-    ga::Population p(popSize, qtyLocations, qtyRoutes);
+    ga::RoutingGA ga(maxGenerations, popSize, qtyLocations, qtyRoutes);
 
-    p.map(print_individual);
+    ga.population.map(print_individual);
+
+    for(int i=0; i<ga.distances.size(); i++){
+        std::cout << "Line num: " << i << "\tdata: ";
+        for(int j=0; j<ga.distances[i].size(); j++){
+            std::cout << ga.distances[i][j] << " ";
+        }
+        std::cout << '\n';
+    }
 
     return 0;
 }
