@@ -126,15 +126,7 @@ namespace ga
     public:
         int maxGenerations;
         Population population;
-
-        GeneticBase() {}
-
-        GeneticBase(int maxGenerations, int populationSize, int chromossomeSize, int qtyCromossomeBreaks)
-        {
-            this->maxGenerations = maxGenerations;
-            this->population = Population(populationSize, chromossomeSize, qtyCromossomeBreaks);
-        }
-
+        
         virtual void calculate_fitness(Individual *individual) = 0;
     };
 }
