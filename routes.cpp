@@ -1,3 +1,4 @@
+#include <functional>
 #include "genetic.cpp"
 
 namespace ga
@@ -5,11 +6,13 @@ namespace ga
     class RoutingGA : public GeneticBase
     {
     public:
+        int numberOfRoutes;
         std::vector<std::vector<int>> distances;
-        
+
         RoutingGA(int maxGenerations, int populationSize, int numLocations, int numRoutes)
         {
             this->maxGenerations = maxGenerations;
+            this->numberOfRoutes = numRoutes;
             this->population = Population(populationSize, numLocations, numRoutes);
             this->generate_distances(numLocations);
         }
@@ -25,6 +28,42 @@ namespace ga
                 }
                 this->distances.push_back(v);
             }
+        }
+
+        void calculate_fitness(Individual *individual)
+        {
+            int totalDistance = 0;
+
+            for (int i = 1; i < this->numberOfRoutes; i++)
+            {
+                int nextRoute = individual->chromossome.genes[i];
+                int prevRoute = individual->chromossome.genes[i - 1];
+
+                int x = std::max(nextRoute, prevRoute) - 1;
+                int y = std::min(nextRoute, prevRoute) - 1;
+
+                totalDistance += this->distances[x][y];
+            }
+
+            individual->fitness = totalDistance;
+
+            if (!this->population.best)
+            {
+                this->population.best = individual;
+            }
+            else
+            {
+                if (individual->fitness < this->population.best->fitness)
+                {
+                    this->population.best = individual;
+                }
+            }
+        }
+
+        void run()
+        {
+            std::function<void(Individual *)> boundCallback = std::bind(&RoutingGA::calculate_fitness, this, std::placeholders::_1);
+            this->population.map(boundCallback);
         }
     };
 }
