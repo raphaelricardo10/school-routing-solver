@@ -16,8 +16,10 @@ int main()
     int qtyLocations = 10;
     int qtyRoutes = 3;                                           
     int maxGenerations = 100;
+    int selectionK = 3;
+    float mutationRate = 0.65;
 
-    ga::RoutingGA ga(maxGenerations, popSize, qtyLocations, qtyRoutes);
+    ga::RoutingGA ga(maxGenerations, popSize, qtyLocations, qtyRoutes, selectionK, mutationRate);
 
     ga.population.map(print_individual);
 
