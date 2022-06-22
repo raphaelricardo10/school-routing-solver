@@ -91,6 +91,7 @@ namespace ga
 
         Population(int size, int n, int qtyBreaks)
         {
+            this->best = 0;
             this->generation = 0;
             this->size = size;
             this->permutator = Permutator(n);
