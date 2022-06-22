@@ -39,7 +39,7 @@ namespace ga
     public:
         std::vector<int> genes;
 
-        void map(void (*func)(int))
+        void map(std::function<void(int)> func)
         {
             for (auto i = this->genes.begin(); i != this->genes.end(); ++i)
             {
@@ -97,7 +97,7 @@ namespace ga
             this->generate_individuals(qtyBreaks);
         }
 
-        void map(void (*func)(Individual *))
+        void map(std::function<void(Individual *)> func)
         {
             for (auto i = this->individuals.begin(); i != this->individuals.end(); ++i)
             {
