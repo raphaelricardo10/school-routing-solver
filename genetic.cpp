@@ -4,6 +4,11 @@
 
 namespace ga
 {
+    int pick_random_element(std::vector<int> &v)
+    {
+        return 1 + rand() % (v.size() - 1);
+    }
+
     class Permutator
     {
     private:
@@ -53,12 +58,9 @@ namespace ga
     private:
         void generateBreakpoints(int qty)
         {
-            int lowerLimit = 1;
-            int upperLimit = this->chromossome.genes.size() - 1;
-
             for (int i = 0; i < qty; i++)
             {
-                int breakpoint = lowerLimit + (rand() % upperLimit);
+                int breakpoint = pick_random_element(this->chromossome.genes);
                 this->chromossome.genes.push_back(breakpoint);
             }
         }
