@@ -85,7 +85,6 @@ namespace ga
     public:
         int generation;
         int size;
-        int mutation_rate;
         Individual *best;
         std::vector<Individual> individuals;
 
@@ -125,6 +124,7 @@ namespace ga
     {
     public:
         int maxGenerations;
+        int mutation_rate;
         Population population;
         
         virtual void calculate_fitness(Individual *individual) = 0;
