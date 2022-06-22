@@ -5,6 +5,14 @@ namespace ga
 {
     class RoutingGA : public GeneticBase
     {
+    private:
+        bool should_update_best(int fitness){
+            if(!this->population.best){
+                return true;
+            }
+
+            return fitness < this->population.best->fitness;
+        }
     public:
         int numberOfRoutes;
         std::vector<std::vector<int>> distances;
@@ -47,16 +55,8 @@ namespace ga
 
             individual->fitness = totalDistance;
 
-            if (!this->population.best)
-            {
+            if(this->should_update_best(individual->fitness)){
                 this->population.best = individual;
-            }
-            else
-            {
-                if (individual->fitness < this->population.best->fitness)
-                {
-                    this->population.best = individual;
-                }
             }
         }
 
