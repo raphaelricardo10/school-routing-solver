@@ -1,11 +1,13 @@
 #include <iostream>
 #include "routes.cpp"
 
-void print_cromossome(int chromossome){
+void print_cromossome(int chromossome)
+{
     std::cout << chromossome << ' ';
 }
 
-void print_individual(ga::Individual *individual){
+void print_individual(ga::Individual *individual)
+{
     individual->chromossome.map(print_cromossome);
     std::cout << '\n';
 }
@@ -14,7 +16,7 @@ int main()
 {
     int popSize = 5;
     int qtyLocations = 10;
-    int qtyRoutes = 3;                                           
+    int qtyRoutes = 3;
     int maxGenerations = 100;
     int selectionK = 3;
     float mutationRate = 0.65;
@@ -23,9 +25,11 @@ int main()
 
     ga.population.map(print_individual);
 
-    for(int i=0; i<ga.distances.size(); i++){
+    for (int i = 0; i < ga.distances.size(); i++)
+    {
         std::cout << "Line num: " << i << "\tdata: ";
-        for(int j=0; j<ga.distances[i].size(); j++){
+        for (int j = 0; j < ga.distances[i].size(); j++)
+        {
             std::cout << ga.distances[i][j] << " ";
         }
         std::cout << '\n';

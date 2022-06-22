@@ -131,10 +131,12 @@ namespace ga
         int select_parent()
         {
             int winner = pick_random_element(this->population.individuals);
-            for(int i = 1; i < this->selectionK; i++){
+            for (int i = 1; i < this->selectionK; i++)
+            {
                 int chosen = pick_random_element(this->population.individuals);
-                
-                if(this->population.individuals[i].fitness < this->population.individuals[winner].fitness){
+
+                if (this->population.individuals[i].fitness < this->population.individuals[winner].fitness)
+                {
                     winner = chosen;
                 }
             }
@@ -147,14 +149,16 @@ namespace ga
         int selectionK;
         float mutationRate;
         Population population;
-        
+
         virtual void calculate_fitness(Individual *individual) = 0;
 
-        void make_selection(){
+        void make_selection()
+        {
             int p1 = this->select_parent();
             int p2 = this->select_parent();
 
-            while(p1 != p2){
+            while (p1 != p2)
+            {
                 p2 = this->select_parent();
             }
         }
