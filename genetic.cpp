@@ -124,7 +124,7 @@ namespace ga
     {
     public:
         int maxGenerations;
-        int mutation_rate;
+        int mutationRate;
         Population population;
         
         virtual void calculate_fitness(Individual *individual) = 0;
