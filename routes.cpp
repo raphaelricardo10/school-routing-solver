@@ -66,6 +66,8 @@ namespace ga
             }
         }
 
+        void make_crossover(Individual *p1, Individual *p2){}
+
         void run()
         {
             std::function<void(Individual *)> boundCallback = std::bind(&RoutingGA::calculate_fitness, this, std::placeholders::_1);
