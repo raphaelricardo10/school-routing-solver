@@ -134,5 +134,7 @@ namespace ga
             this->maxGenerations = maxGenerations;
             this->population = Population(populationSize, chromossomeSize, qtyCromossomeBreaks);
         }
+
+        virtual void calculate_fitness(Individual *individual) = 0;
     };
 }
