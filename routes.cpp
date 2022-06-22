@@ -1,4 +1,5 @@
 #include <functional>
+#include <tuple>
 #include "genetic.cpp"
 
 namespace ga
@@ -66,12 +67,17 @@ namespace ga
             }
         }
 
-        void make_crossover(Individual *p1, Individual *p2){}
+        void make_crossover(Individual *p1, Individual *p2){
+
+        }
 
         void run()
         {
             std::function<void(Individual *)> boundCallback = std::bind(&RoutingGA::calculate_fitness, this, std::placeholders::_1);
             this->population.map(boundCallback);
+
+            Individual *p1, *p2;
+            std::tie(p1, p2) = this->make_selection();
         }
     };
 }
