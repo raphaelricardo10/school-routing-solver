@@ -164,7 +164,7 @@ namespace ga
                 p2 = this->select_parent();
             }
 
-            return std::make_tuple(p1, p2);
+            return std::make_tuple(&population.individuals[p1], &population.individuals[p2]);
         }
     };
 }
