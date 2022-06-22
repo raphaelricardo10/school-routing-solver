@@ -29,5 +29,7 @@ int main()
         std::cout << '\n';
     }
 
+    ga.run();
+
     return 0;
 }
