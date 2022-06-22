@@ -1,6 +1,7 @@
 #include <vector>
 #include <bits/stdc++.h>
 #include <algorithm>
+#include <tuple>
 
 namespace ga
 {
@@ -151,8 +152,9 @@ namespace ga
         Population population;
 
         virtual void calculate_fitness(Individual *individual) = 0;
+        virtual void make_crossover(Individual *p1, Individual *p2) = 0;
 
-        void make_selection()
+        auto make_selection()
         {
             int p1 = this->select_parent();
             int p2 = this->select_parent();
@@ -161,6 +163,8 @@ namespace ga
             {
                 p2 = this->select_parent();
             }
+
+            return std::make_tuple(p1, p2);
         }
     };
 }
