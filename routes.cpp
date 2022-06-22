@@ -17,10 +17,11 @@ namespace ga
         int numberOfRoutes;
         std::vector<std::vector<int>> distances;
 
-        RoutingGA(int maxGenerations, int populationSize, int numLocations, int numRoutes)
+        RoutingGA(int maxGenerations, int populationSize, int numLocations, int numRoutes, int mutation_rate)
         {
             this->maxGenerations = maxGenerations;
             this->numberOfRoutes = numRoutes;
+            this->mutation_rate = mutation_rate;
             this->population = Population(populationSize, numLocations, numRoutes);
             this->generate_distances(numLocations);
         }
