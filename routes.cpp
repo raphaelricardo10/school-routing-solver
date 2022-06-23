@@ -1,5 +1,7 @@
 #include <functional>
 #include <tuple>
+#include <deque>
+#include <ctime>
 #include "genetic.cpp"
 
 namespace ga
@@ -18,11 +20,12 @@ namespace ga
             this->end = end;
         }
 
-        std::vector<int> get_subvector()
+        template <class T>
+        T get_subvector()
         {
-            std::vector<int> newV;
+            T newV;
 
-            for (int i = this->start; i < this->end; i++)
+            for (int i = this->start; i <= this->end; i++)
             {
                 newV.push_back(this->v->at(i));
             }
@@ -73,6 +76,7 @@ namespace ga
 
         RoutingGA(int maxGenerations, int populationSize, int numLocations, int numRoutes, int selectionK, float mutationRate)
         {
+            srand(time(0));
             this->maxGenerations = maxGenerations;
             this->numberOfRoutes = numRoutes;
             this->selectionK = selectionK;
@@ -134,10 +138,13 @@ namespace ga
             Interval p1Interval = extract_random_part(&p1->chromossome.genes, p1Breaks);
             Interval p2Interval = extract_random_part(&p1->chromossome.genes, p1Breaks);
 
-            std::vector<int> p1Part = p1Interval.get_subvector();
-            std::vector<int> p2Part = p2Interval.get_subvector();
+            std::vector<int> p1Part = p1Interval.get_subvector<std::vector<int>>();
+            std::deque<int> p2Part = p2Interval.get_subvector<std::deque<int>>();
 
             Interval crossoverInterval = extract_random_part(&p1Part);
+
+            std::cout << crossoverInterval.v->at(0);
+
         }
 
         void run()
