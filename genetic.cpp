@@ -5,11 +5,8 @@
 
 namespace ga
 {
-    int pick_random_element(std::vector<int> &v)
-    {
-        return 1 + rand() % (v.size() - 1);
-    }
-    int pick_random_element(std::vector<Individual> &v)
+    template <class T>
+    int pick_random_element(T &v)
     {
         return 1 + rand() % (v.size() - 1);
     }
@@ -65,7 +62,7 @@ namespace ga
         {
             for (int i = 0; i < qty; i++)
             {
-                int breakpoint = pick_random_element(this->chromossome.genes);
+                int breakpoint = pick_random_element<std::vector<int>>(this->chromossome.genes);
                 this->chromossome.genes.push_back(breakpoint);
             }
         }
@@ -131,10 +128,10 @@ namespace ga
         // Tournament selection
         int select_parent()
         {
-            int winner = pick_random_element(this->population.individuals);
+            int winner = pick_random_element<std::vector<Individual>>(this->population.individuals);
             for (int i = 1; i < this->selectionK; i++)
             {
-                int chosen = pick_random_element(this->population.individuals);
+                int chosen = pick_random_element<std::vector<Individual>>(this->population.individuals);
 
                 if (this->population.individuals[i].fitness < this->population.individuals[winner].fitness)
                 {
@@ -143,7 +140,7 @@ namespace ga
             }
 
             return winner;
-        }
+        };
 
     public:
         int maxGenerations;
@@ -165,6 +162,6 @@ namespace ga
             }
 
             return std::make_tuple(&population.individuals[p1], &population.individuals[p2]);
-        }
+        };
     };
 }
