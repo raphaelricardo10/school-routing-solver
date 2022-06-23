@@ -44,7 +44,7 @@ namespace ga
             return fitness < this->population.best->fitness;
         }
 
-        Interval &extract_random_part(std::vector<int> *v)
+        Interval extract_random_part(std::vector<int> *v)
         {
 
             int limit1 = rand() % v->size();
@@ -55,15 +55,16 @@ namespace ga
             return interval;
         }
 
-        Interval &extract_random_part(std::vector<int> *v, std::vector<int> &breakpoints)
+        Interval extract_random_part(std::vector<int> *v, std::vector<int> &breakpoints)
         {
-            int start = pick_random_element(breakpoints);
+            int start = pick_random_element<std::vector<int>>(breakpoints);
             int end = start + 1;
 
             Interval interval(v, start, end);
 
             return interval;
         }
+
 
     public:
         int numberOfRoutes;
@@ -130,13 +131,13 @@ namespace ga
                 p2Breaks.push_back(p2->chromossome.genes[breakIndex]);
             }
 
-            Interval &p1Interval = extract_random_part(&p1->chromossome.genes, p1Breaks);
-            Interval &p2Interval = extract_random_part(&p1->chromossome.genes, p1Breaks);
+            Interval p1Interval = extract_random_part(&p1->chromossome.genes, p1Breaks);
+            Interval p2Interval = extract_random_part(&p1->chromossome.genes, p1Breaks);
 
             std::vector<int> p1Part = p1Interval.get_subvector();
             std::vector<int> p2Part = p2Interval.get_subvector();
 
-            Interval &crossoverInterval = extract_random_part(&p1Part);
+            Interval crossoverInterval = extract_random_part(&p1Part);
         }
 
         void run()
