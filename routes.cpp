@@ -4,6 +4,33 @@
 
 namespace ga
 {
+    class Interval
+    {
+    public:
+        int start;
+        int end;
+        std::vector<int> *v;
+
+        Interval(std::vector<int> *v, int start, int end)
+        {
+            this->v = v;
+            this->start = start;
+            this->end = end;
+        }
+
+        std::vector<int> get_subvector()
+        {
+            std::vector<int> newV;
+
+            for (int i = this->start; i < this->end; i++)
+            {
+                newV.push_back(this->v->at(i));
+            }
+
+            return newV;
+        }
+    };
+
     class RoutingGA : public GeneticBase
     {
     private:
@@ -17,8 +44,30 @@ namespace ga
             return fitness < this->population.best->fitness;
         }
 
+        Interval &extract_random_part(std::vector<int> *v)
+        {
+
+            int limit1 = rand() % v->size();
+            int limit2 = rand() % v->size();
+
+            Interval interval(v, std::min(limit1, limit2), std::max(limit1, limit2));
+
+            return interval;
+        }
+
+        Interval &extract_random_part(std::vector<int> *v, std::vector<int> &breakpoints)
+        {
+            int start = pick_random_element(breakpoints);
+            int end = start + 1;
+
+            Interval interval(v, start, end);
+
+            return interval;
+        }
+
     public:
         int numberOfRoutes;
+        int numberOfLocations;
         std::vector<std::vector<int>> distances;
 
         RoutingGA(int maxGenerations, int populationSize, int numLocations, int numRoutes, int selectionK, float mutationRate)
@@ -27,6 +76,7 @@ namespace ga
             this->numberOfRoutes = numRoutes;
             this->selectionK = selectionK;
             this->mutationRate = mutationRate;
+            this->numberOfLocations = numLocations;
             this->population = Population(populationSize, numLocations, numRoutes);
             this->generate_distances(numLocations);
         }
@@ -67,8 +117,26 @@ namespace ga
             }
         }
 
-        void make_crossover(Individual *p1, Individual *p2){
+        void make_crossover(Individual *p1, Individual *p2)
+        {
+            std::vector<int> p1Breaks = {0};
+            std::vector<int> p2Breaks = {0};
 
+            for (int i = 0; i < this->numberOfRoutes; i++)
+            {
+                int breakIndex = this->numberOfLocations + i;
+
+                p1Breaks.push_back(p1->chromossome.genes[breakIndex]);
+                p2Breaks.push_back(p2->chromossome.genes[breakIndex]);
+            }
+
+            Interval &p1Interval = extract_random_part(&p1->chromossome.genes, p1Breaks);
+            Interval &p2Interval = extract_random_part(&p1->chromossome.genes, p1Breaks);
+
+            std::vector<int> p1Part = p1Interval.get_subvector();
+            std::vector<int> p2Part = p2Interval.get_subvector();
+
+            Interval &crossoverInterval = extract_random_part(&p1Part);
         }
 
         void run()
@@ -78,6 +146,8 @@ namespace ga
 
             Individual *p1, *p2;
             std::tie(p1, p2) = this->make_selection();
+
+            this->make_crossover(p1, p2);
         }
     };
 }
