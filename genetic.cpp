@@ -156,7 +156,7 @@ namespace ga
             int p1 = this->select_parent();
             int p2 = this->select_parent();
 
-            while (p1 != p2)
+            while (p1 == p2)
             {
                 p2 = this->select_parent();
             }
