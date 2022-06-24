@@ -11,6 +11,14 @@ namespace ga
         return rand() % v.size();
     }
 
+    void rotate_deq(std::deque<int> &deq, int qty){
+        for(int i = 0; i < qty; i++){
+            int front = deq.front();
+            deq.pop_front();
+            deq.push_back(front);
+        }
+    }
+
     class Breakpoint{
     private:
         bool is_zero(){
