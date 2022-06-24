@@ -52,6 +52,10 @@ namespace ga
             int index1 = pick_random_element(v);
             int index2 = pick_random_element(v);
 
+            while(index1 == index2){
+                index2 = pick_random_element(v);
+            }
+
             Interval interval(&v, index1, index2);
 
             return interval;
