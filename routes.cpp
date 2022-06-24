@@ -139,7 +139,7 @@ namespace ga
             }
 
             Interval p1Interval = extract_random_part(p1->chromossome.genes, p1Breaks);
-            Interval p2Interval = extract_random_part(p1->chromossome.genes, p1Breaks);
+            Interval p2Interval = extract_random_part(p2->chromossome.genes, p2Breaks);
 
             std::vector<int> p1Part = p1Interval.get_subvector<std::vector<int>>();
             std::deque<int> p2Part = p2Interval.get_subvector<std::deque<int>>();
