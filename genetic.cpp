@@ -58,19 +58,27 @@ namespace ga
     class Individual
     {
     private:
+        bool is_zero(int breakpoint){
+            return breakpoint == 0;
+        }
+
+        bool is_repeated(std::unordered_map<int, int> &bpMap, int breakpoint){
+            return bpMap.find(breakpoint) != bpMap.end();
+        }
+
         void generateBreakpoints(int qty)
         {
-            std::deque<int> breakpoints;
+            std::set<int> breakpoints;
+            std::unordered_map<int, int> bpMap;
+
             for (int i = 0; i < qty; i++)
             {
                 int breakpoint = pick_random_element<std::vector<int>>(this->chromossome.genes);
+                while(is_zero(breakpoint) || is_repeated(bpMap, breakpoint)){
+                    breakpoint = pick_random_element<std::vector<int>>(this->chromossome.genes);
+                }
 
-                if(breakpoints.empty() || breakpoints.back() < breakpoint){
-                    breakpoints.push_back(breakpoint);
-                }
-                else{
-                    breakpoints.push_front(breakpoint);
-                }
+                breakpoints.insert(breakpoint);
             }
             for (int breakpoint : breakpoints){
                 this->chromossome.genes.push_back(breakpoint);
