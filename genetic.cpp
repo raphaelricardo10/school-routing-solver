@@ -8,7 +8,7 @@ namespace ga
     template <class T>
     int pick_random_element(T &v)
     {
-        return 1 + rand() % (v.size() - 1);
+        return rand() % (v.size() - 1);
     }
 
     class Permutator
