@@ -60,9 +60,19 @@ namespace ga
     private:
         void generateBreakpoints(int qty)
         {
+            std::deque<int> breakpoints;
             for (int i = 0; i < qty; i++)
             {
                 int breakpoint = pick_random_element<std::vector<int>>(this->chromossome.genes);
+
+                if(breakpoints.empty() || breakpoints.back() < breakpoint){
+                    breakpoints.push_back(breakpoint);
+                }
+                else{
+                    breakpoints.push_front(breakpoint);
+                }
+            }
+            for (int breakpoint : breakpoints){
                 this->chromossome.genes.push_back(breakpoint);
             }
         }
