@@ -8,7 +8,7 @@ namespace ga
     template <class T>
     int pick_random_element(T &v)
     {
-        return rand() % (v.size() - 1);
+        return rand() % v.size();
     }
 
     class Breakpoint{
