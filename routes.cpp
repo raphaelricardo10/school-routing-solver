@@ -64,7 +64,7 @@ namespace ga
         Interval extract_random_part(std::vector<int> &v, std::vector<int> &breakpoints)
         {
             int start = pick_random_element<std::vector<int>>(breakpoints);
-            int end = start + 1;
+            int end = start < breakpoints.size() - 1 ? start + 1 : start - 1;
 
             Interval interval(&v, breakpoints[start], breakpoints[end]);
 
