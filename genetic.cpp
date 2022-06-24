@@ -11,6 +11,52 @@ namespace ga
         return rand() % (v.size() - 1);
     }
 
+    class Breakpoint{
+    private:
+        bool is_zero(){
+            return this->value == 0;
+        }
+    public:
+        int value;
+
+        Breakpoint(std::vector<int> &v, bool allowZero){
+            this->value = pick_random_element<std::vector<int>>(v);;
+
+            if(!allowZero){
+                while(this->is_zero()){
+                    this->value = pick_random_element<std::vector<int>>(v);
+                }
+            }
+            else{
+                this->value = pick_random_element<std::vector<int>>(v);
+            }
+        }
+    };
+
+    class BreakpointSet{
+    private:
+        std::unordered_map<int, int> map;
+
+        bool is_repeated(Breakpoint &breakpoint){
+            return this->map.find(breakpoint.value) != this->map.end();
+        }
+
+    public:
+        std::set<int> values;
+
+        BreakpointSet(std::vector<int> &v, int qty){
+            for (int i = 0; i < qty; i++)
+            {
+                Breakpoint bp(v, false);
+                while(this->is_repeated(bp)){
+                    bp = Breakpoint(v, false);
+                }
+
+                this->values.insert(bp.value);
+            }
+        }
+    };
+
     class Permutator
     {
     private:
@@ -58,29 +104,11 @@ namespace ga
     class Individual
     {
     private:
-        bool is_zero(int breakpoint){
-            return breakpoint == 0;
-        }
-
-        bool is_repeated(std::unordered_map<int, int> &bpMap, int breakpoint){
-            return bpMap.find(breakpoint) != bpMap.end();
-        }
-
         void generateBreakpoints(int qty)
         {
-            std::set<int> breakpoints;
-            std::unordered_map<int, int> bpMap;
+            BreakpointSet breakpoints(this->chromossome.genes, qty);
 
-            for (int i = 0; i < qty; i++)
-            {
-                int breakpoint = pick_random_element<std::vector<int>>(this->chromossome.genes);
-                while(is_zero(breakpoint) || is_repeated(bpMap, breakpoint)){
-                    breakpoint = pick_random_element<std::vector<int>>(this->chromossome.genes);
-                }
-
-                breakpoints.insert(breakpoint);
-            }
-            for (int breakpoint : breakpoints){
+            for (int breakpoint : breakpoints.values){
                 this->chromossome.genes.push_back(breakpoint);
             }
         }
