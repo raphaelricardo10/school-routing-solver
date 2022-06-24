@@ -104,7 +104,7 @@ namespace ga
     class Individual
     {
     private:
-        void generateBreakpoints(int qty)
+        void generate_breakpoints(int qty)
         {
             BreakpointSet breakpoints(this->chromossome.genes, qty);
 
@@ -121,7 +121,7 @@ namespace ga
         {
             this->fitness = 0;
             this->chromossome.genes = genes;
-            this->generateBreakpoints(qtyBreaks);
+            this->generate_breakpoints(qtyBreaks);
         }
     };
 
