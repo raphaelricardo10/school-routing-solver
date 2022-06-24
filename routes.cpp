@@ -13,11 +13,11 @@ namespace ga
         int end;
         std::vector<int> *v;
 
-        Interval(std::vector<int> *v, int start, int end)
+        Interval(std::vector<int> *v, int index1, int index2)
         {
             this->v = v;
-            this->start = start;
-            this->end = end;
+            this->start = std::min(index1, index2);
+            this->end = std::max(index1, index2);
         }
 
         template <class T>
@@ -50,10 +50,10 @@ namespace ga
         Interval extract_random_part(std::vector<int> *v)
         {
 
-            int limit1 = rand() % v->size();
-            int limit2 = rand() % v->size();
+            int index1 = rand() % v->size();
+            int index2 = rand() % v->size();
 
-            Interval interval(v, std::min(limit1, limit2), std::max(limit1, limit2));
+            Interval interval(v, index1, index2);
 
             return interval;
         }
@@ -63,7 +63,7 @@ namespace ga
             int start = pick_random_element<std::vector<int>>(breakpoints);
             int end = start + 1;
 
-            Interval interval(v, start, end);
+            Interval interval(v, breakpoints[start], breakpoints[end]);
 
             return interval;
         }
