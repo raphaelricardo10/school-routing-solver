@@ -38,7 +38,7 @@ namespace ga
         std::unordered_map<int, int> map;
 
         bool is_repeated(Breakpoint &breakpoint){
-            return this->map.find(breakpoint.value) != this->map.end();
+            return this->map.count(breakpoint.value);
         }
 
     public:
@@ -47,11 +47,12 @@ namespace ga
         BreakpointSet(std::vector<int> &v, int qty){
             for (int i = 0; i < qty; i++)
             {
-                Breakpoint bp(v, false);
+                Breakpoint bp = Breakpoint(v, false);
                 while(this->is_repeated(bp)){
                     bp = Breakpoint(v, false);
                 }
 
+                this->map[bp.value] = bp.value;
                 this->values.insert(bp.value);
             }
         }
