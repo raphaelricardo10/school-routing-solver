@@ -146,6 +146,8 @@ namespace ga
 
             Interval crossoverInterval = extract_random_part(p1Part);
 
+            rotate_deq(p2Part, 1);
+
             std::cout << crossoverInterval.v->at(0);
 
         }
