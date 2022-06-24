@@ -145,6 +145,7 @@ namespace ga
             std::deque<int> p2Part = p2Interval.get_subvector<std::deque<int>>();
 
             Interval crossoverInterval = extract_random_part(p1Part);
+            std::vector<int> crossoverPart = crossoverInterval.get_subvector<std::vector<int>>();
 
             rotate_deq(p2Part, 1);
 
