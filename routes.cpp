@@ -20,17 +20,16 @@ namespace ga
             this->endIndex = std::max(index1, index2);
         }
 
-        template <class T>
-        T get_subvector()
-        {
-            T newV;
+        auto begin(){
+            return this->v->begin() + startIndex;
+        }
 
-            for (int i = this->startIndex; i <= this->endIndex; i++)
-            {
-                newV.push_back(this->v->at(i));
-            }
+        auto end(){
+            return this->v->begin() + endIndex;
+        }
 
-            return newV;
+        int size(){
+            return this->startIndex - this->endIndex + 1;
         }
     };
 
@@ -143,15 +142,14 @@ namespace ga
             }
 
             Interval p1Interval = extract_random_part(p1->chromossome.genes, p1Breaks);
-            std::vector<int> p1Part = p1Interval.get_subvector<std::vector<int>>();
 
-            int rotationOffset = p1Part.size()/2;
+            int rotationOffset = p1Interval.size()/2;
             rotate_deq(offspring, rotationOffset);
 
-            offspring.insert(offspring.begin() + p1Interval.startIndex, p1Part.begin(), p1Part.end());
+            offspring.insert(offspring.begin() + p1Interval.startIndex, p1Interval.begin(), p1Interval.end());
 
-            while(p1Part.size()){
-                int gene = p1Part.back();
+            for(auto it = p1Interval.begin(); it != p1Interval.end(); ++it){
+                int gene = *it;
                 if(offspring_map.find(gene) != offspring_map.end()){
                     int index = offspring_map[gene] - rotationOffset;
                     if(index < 0){
@@ -163,7 +161,6 @@ namespace ga
                     }
 
                     offspring[index] = -1;
-                    p1Part.pop_back();
                 }
             }
 
@@ -171,7 +168,6 @@ namespace ga
                 return elem == -1;
             });
             offspring.erase(it, offspring.end());
-            int i =0;
         }
 
         void run()
