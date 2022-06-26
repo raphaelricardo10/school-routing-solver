@@ -144,7 +144,6 @@ namespace ga
 
             Interval p1Interval = extract_random_part(p1->chromossome.genes, p1Breaks);
             std::vector<int> p1Part = p1Interval.get_subvector<std::vector<int>>();
-            std::vector<int> copy = p1Part;
 
             int rotationOffset = p1Part.size()/2;
             rotate_deq(offspring, rotationOffset);
