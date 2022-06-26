@@ -128,29 +128,50 @@ namespace ga
         void make_crossover(Individual *p1, Individual *p2)
         {
             std::vector<int> p1Breaks = {0};
-            std::vector<int> p2Breaks = {0};
-
             for (int i = 0; i < this->numberOfRoutes; i++)
             {
                 int breakIndex = this->numberOfLocations + i;
-
                 p1Breaks.push_back(p1->chromossome.genes[breakIndex]);
-                p2Breaks.push_back(p2->chromossome.genes[breakIndex]);
+            }
+
+            std::deque<int> offspring;
+            std::unordered_map<int, int> offspring_map;
+            for(int i = 0; i < this->numberOfLocations; i++){
+                int gene = p2->chromossome.genes[i];
+                offspring.push_back(gene);
+                offspring_map[gene] = i;
             }
 
             Interval p1Interval = extract_random_part(p1->chromossome.genes, p1Breaks);
-            Interval p2Interval = extract_random_part(p2->chromossome.genes, p2Breaks);
-
             std::vector<int> p1Part = p1Interval.get_subvector<std::vector<int>>();
-            std::deque<int> p2Part = p2Interval.get_subvector<std::deque<int>>();
+            std::vector<int> copy = p1Part;
 
-            Interval crossoverInterval = extract_random_part(p1Part);
-            std::vector<int> crossoverPart = crossoverInterval.get_subvector<std::vector<int>>();
+            int rotationOffset = p1Part.size()/2;
+            rotate_deq(offspring, rotationOffset);
 
-            rotate_deq(p2Part, 1);
+            offspring.insert(offspring.begin() + p1Interval.start, p1Part.begin(), p1Part.end());
 
-            std::cout << crossoverInterval.v->at(0);
+            while(p1Part.size()){
+                int gene = p1Part.back();
+                if(offspring_map.find(gene) != offspring_map.end()){
+                    int index = offspring_map[gene] - rotationOffset;
+                    if(index < 0){
+                        index += offspring_map.size();
+                    }
 
+                    if(offspring_map[gene] >= p1Interval.start){
+                        index += p1Interval.end - p1Interval.start + 1;
+                    }
+
+                    offspring[index] = -1;
+                    p1Part.pop_back();
+                }
+            }
+
+            auto it = std::remove_if(offspring.begin(), offspring.end(), [](int elem){
+                return elem == -1;
+            });
+            offspring.erase(it, offspring.end());
         }
 
         void run()
