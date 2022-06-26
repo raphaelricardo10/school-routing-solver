@@ -9,15 +9,15 @@ namespace ga
     class Interval
     {
     public:
-        int start;
-        int end;
+        int startIndex;
+        int endIndex;
         std::vector<int> *v;
 
         Interval(std::vector<int> *v, int index1, int index2)
         {
             this->v = v;
-            this->start = std::min(index1, index2);
-            this->end = std::max(index1, index2);
+            this->startIndex = std::min(index1, index2);
+            this->endIndex = std::max(index1, index2);
         }
 
         template <class T>
@@ -25,7 +25,7 @@ namespace ga
         {
             T newV;
 
-            for (int i = this->start; i <= this->end; i++)
+            for (int i = this->startIndex; i <= this->endIndex; i++)
             {
                 newV.push_back(this->v->at(i));
             }
@@ -148,7 +148,7 @@ namespace ga
             int rotationOffset = p1Part.size()/2;
             rotate_deq(offspring, rotationOffset);
 
-            offspring.insert(offspring.begin() + p1Interval.start, p1Part.begin(), p1Part.end());
+            offspring.insert(offspring.begin() + p1Interval.startIndex, p1Part.begin(), p1Part.end());
 
             while(p1Part.size()){
                 int gene = p1Part.back();
@@ -158,8 +158,8 @@ namespace ga
                         index += offspring_map.size();
                     }
 
-                    if(offspring_map[gene] >= p1Interval.start){
-                        index += p1Interval.end - p1Interval.start + 1;
+                    if(offspring_map[gene] >= p1Interval.startIndex){
+                        index += p1Interval.startIndex - p1Interval.startIndex + 1;
                     }
 
                     offspring[index] = -1;
@@ -171,6 +171,7 @@ namespace ga
                 return elem == -1;
             });
             offspring.erase(it, offspring.end());
+            int i =0;
         }
 
         void run()
