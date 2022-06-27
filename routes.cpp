@@ -28,8 +28,19 @@ namespace ga
             return this->v->begin() + endIndex;
         }
 
+        auto at(int pos){
+            return this->v->begin() + startIndex + pos;
+        }
+
         int size(){
-            return this->startIndex - this->endIndex + 1;
+            return this->endIndex - this->startIndex + 1;
+        }
+
+        void rotate_left(int n){
+            for(int i = 0; i < n; i++){
+                this->v->insert(this->end() + 1, *this->begin());
+                this->v->erase(this->begin());
+            }
         }
     };
 
@@ -127,47 +138,62 @@ namespace ga
         void make_crossover(Individual *p1, Individual *p2)
         {
             std::vector<int> p1Breaks = {0};
+            std::vector<int> p2Breaks = {0};
             for (int i = 0; i < this->numberOfRoutes; i++)
             {
                 int breakIndex = this->numberOfLocations + i;
                 p1Breaks.push_back(p1->chromossome.genes[breakIndex]);
+                p2Breaks.push_back(p2->chromossome.genes[breakIndex]);
             }
 
-            std::deque<int> offspring;
-            std::unordered_map<int, int> offspring_map;
-            for(int i = 0; i < this->numberOfLocations; i++){
-                int gene = p2->chromossome.genes[i];
-                offspring.push_back(gene);
-                offspring_map[gene] = i;
-            }
 
             Interval p1Interval = extract_random_part(p1->chromossome.genes, p1Breaks);
+            Interval p2Interval = extract_random_part(p2->chromossome.genes, p2Breaks);
+            
+            std::vector<int> p1Part(p1Interval.begin(), p1Interval.end() + 1);
+            std::deque<int> p2Part(p2Interval.begin(), p2Interval.end() + 1);
+
+            Interval crossoverInterval = extract_random_part(p1Part);
+            std::unordered_set<int> crossoverMap(crossoverInterval.begin(), crossoverInterval.end() + 1);
 
             int rotationOffset = p1Interval.size()/2;
-            rotate_deq(offspring, rotationOffset);
+            rotate_deq(p2Part, rotationOffset);
 
-            offspring.insert(offspring.begin() + p1Interval.startIndex, p1Interval.begin(), p1Interval.end());
+            std::deque<int> offspring(p2->chromossome.genes.begin(), p2->chromossome.genes.begin() + this->numberOfLocations);
+            
+            p2Part.insert(p2Part.begin() + crossoverInterval.startIndex, crossoverInterval.begin(), crossoverInterval.end() + 1);
+            offspring.erase(offspring.begin() + p2Interval.startIndex , offspring.begin() + p2Interval.endIndex + 1);
+            offspring.insert(offspring.begin() + p2Interval.startIndex, p2Part.begin(), p2Part.end());
 
-            for(auto it = p1Interval.begin(); it != p1Interval.end(); ++it){
-                int gene = *it;
-                if(offspring_map.find(gene) != offspring_map.end()){
-                    int index = offspring_map[gene] - rotationOffset;
-                    if(index < 0){
-                        index += offspring_map.size();
-                    }
-
-                    if(offspring_map[gene] >= p1Interval.startIndex){
-                        index += p1Interval.startIndex - p1Interval.startIndex + 1;
-                    }
-
-                    offspring[index] = -1;
+            std::map<int, int> removed;
+            
+            int i = -1;
+            auto it = std::remove_if(offspring.begin(), offspring.end(), [crossoverMap, p2Interval, crossoverInterval, offspring, &i, &removed] (int elem) {
+                i++;
+                
+                if(offspring[i] != elem){
+                    return false;
                 }
-            }
 
-            auto it = std::remove_if(offspring.begin(), offspring.end(), [](int elem){
-                return elem == -1;
+                if(crossoverMap.find(elem) == crossoverMap.end()){
+                    return false;
+                }
+
+                int intervalIndex = p2Interval.startIndex;
+                if(i < intervalIndex + crossoverInterval.startIndex || i > intervalIndex + crossoverInterval.endIndex){
+                    removed[offspring[i]] = i;
+                    return true;
+                }
+
+                return false;
             });
+
             offspring.erase(it, offspring.end());
+
+            if(offspring.size() != this->numberOfLocations){
+                int i = 0;
+                i++;
+            }
         }
 
         void run()
