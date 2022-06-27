@@ -5,9 +5,21 @@
 
 namespace ga
 {
-    template <class T>
-    int pick_random_element(T &v)
+    template <class _Container>
+    int pick_random_element(_Container &v)
     {
+        return rand() % v.size();
+    }
+
+    template <class _Container>
+    int pick_random_element(_Container &v, int uniqueValue)
+    {
+        int randomValue;
+        do{
+            randomValue = rand() % v.size();
+            
+        } while(randomValue == uniqueValue)
+
         return rand() % v.size();
     }
 
