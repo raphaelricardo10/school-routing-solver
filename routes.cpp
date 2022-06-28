@@ -155,24 +155,17 @@ namespace ga
             p2Part.insert(p2Part.begin() + crossoverInterval.startIndex, crossoverInterval.begin(), crossoverInterval.end() + 1);
             offspring.erase(offspring.begin() + p2Interval.startIndex , offspring.begin() + p2Interval.endIndex + 1);
             offspring.insert(offspring.begin() + p2Interval.startIndex, p2Part.begin(), p2Part.end());
-
-            std::map<int, int> removed;
             
             int i = -1;
             auto it = std::remove_if(offspring.begin(), offspring.end(), [crossoverMap, p2Interval, crossoverInterval, offspring, &i, &removed] (int elem) {
                 i++;
                 
-                if(offspring[i] != elem){
-                    return false;
-                }
-
                 if(crossoverMap.find(elem) == crossoverMap.end()){
                     return false;
                 }
 
                 int intervalIndex = p2Interval.startIndex;
                 if(i < intervalIndex + crossoverInterval.startIndex || i > intervalIndex + crossoverInterval.endIndex){
-                    removed[offspring[i]] = i;
                     return true;
                 }
 
@@ -180,11 +173,6 @@ namespace ga
             });
 
             offspring.erase(it, offspring.end());
-
-            if(offspring.size() != this->numberOfLocations){
-                int i = 0;
-                i++;
-            }
         }
 
         void run()
