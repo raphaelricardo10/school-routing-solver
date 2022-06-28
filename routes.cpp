@@ -20,6 +20,22 @@ namespace ga
             this->endIndex = std::max(index1, index2);
         }
 
+        Interval(std::vector<int> &v)
+        {
+            int index1 = pick_random_element(v);
+            int index2 = pick_random_element(v, index1);
+
+            *this = Interval(&v, index1, index2);
+        }
+
+        Interval(std::vector<int> &v, std::vector<int> &breakpoints)
+        {
+            int start = pick_random_element<std::vector<int>>(breakpoints);
+            int end = start < breakpoints.size() - 1 ? start + 1 : start - 1;
+
+            *this = Interval(&v, breakpoints[start], breakpoints[end]);
+        }
+
         auto begin(){
             return this->v->begin() + startIndex;
         }
@@ -56,31 +72,6 @@ namespace ga
 
             return fitness < this->population.best->fitness;
         }
-
-        Interval extract_random_part(std::vector<int> &v)
-        {
-            int index1 = pick_random_element(v);
-            int index2 = pick_random_element(v);
-
-            while(index1 == index2){
-                index2 = pick_random_element(v);
-            }
-
-            Interval interval(&v, index1, index2);
-
-            return interval;
-        }
-
-        Interval extract_random_part(std::vector<int> &v, std::vector<int> &breakpoints)
-        {
-            int start = pick_random_element<std::vector<int>>(breakpoints);
-            int end = start < breakpoints.size() - 1 ? start + 1 : start - 1;
-
-            Interval interval(&v, breakpoints[start], breakpoints[end]);
-
-            return interval;
-        }
-
 
     public:
         int numberOfRoutes;
@@ -147,20 +138,20 @@ namespace ga
             }
 
 
-            Interval p1Interval = extract_random_part(p1->chromossome.genes, p1Breaks);
-            Interval p2Interval = extract_random_part(p2->chromossome.genes, p2Breaks);
+            Interval p1Interval(p1->chromossome.genes, p1Breaks);
+            Interval p2Interval(p2->chromossome.genes, p2Breaks);
             
             std::vector<int> p1Part(p1Interval.begin(), p1Interval.end() + 1);
             std::deque<int> p2Part(p2Interval.begin(), p2Interval.end() + 1);
 
-            Interval crossoverInterval = extract_random_part(p1Part);
+            Interval crossoverInterval(p1Part);
             std::unordered_set<int> crossoverMap(crossoverInterval.begin(), crossoverInterval.end() + 1);
 
             int rotationOffset = p1Interval.size()/2;
             rotate_deq(p2Part, rotationOffset);
 
             std::deque<int> offspring(p2->chromossome.genes.begin(), p2->chromossome.genes.begin() + this->numberOfLocations);
-            
+
             p2Part.insert(p2Part.begin() + crossoverInterval.startIndex, crossoverInterval.begin(), crossoverInterval.end() + 1);
             offspring.erase(offspring.begin() + p2Interval.startIndex , offspring.begin() + p2Interval.endIndex + 1);
             offspring.insert(offspring.begin() + p2Interval.startIndex, p2Part.begin(), p2Part.end());
