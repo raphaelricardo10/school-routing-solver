@@ -41,15 +41,21 @@ namespace ga
             *this = Interval(&v, breakpoints[start], breakpoints[end]);
         }
 
-        auto begin(){
+        Interval(Interval &interval){
+            std::vector<int> v(interval.begin(), interval.end());
+
+            *this = Interval(v);
+        }
+
+        std::vector<int>::iterator begin(){
             return this->v->begin() + startIndex;
         }
 
-        auto end(){
+        std::vector<int>::iterator end(){
             return this->v->begin() + endIndex + 1;
         }
 
-        auto at(int pos){
+        std::vector<int>::iterator at(int pos){
             return this->v->begin() + startIndex + pos;
         }
 
@@ -135,11 +141,10 @@ namespace ga
         {
             Interval p1Interval(p1->chromossome.genes, this->numberOfLocations);
             Interval p2Interval(p2->chromossome.genes, this->numberOfLocations);
+            Interval crossoverInterval(p1Interval);
             
-            std::vector<int> p1Part(p1Interval.begin(), p1Interval.end());
             std::deque<int> p2Part(p2Interval.begin(), p2Interval.end());
 
-            Interval crossoverInterval(p1Part);
             std::unordered_set<int> crossoverMap(crossoverInterval.begin(), crossoverInterval.end());
 
             int rotationOffset = p1Interval.size()/2;
@@ -152,7 +157,7 @@ namespace ga
             offspring.insert(offspring.begin() + p2Interval.startIndex, p2Part.begin(), p2Part.end());
             
             int i = -1;
-            auto it = std::remove_if(offspring.begin(), offspring.end(), [crossoverMap, p2Interval, crossoverInterval, &i] (int elem) {
+            auto it = std::remove_if(offspring.begin(), offspring.end(), [&crossoverMap, &p2Interval, &crossoverInterval, &i] (int elem) {
                 i++;
 
                 if(crossoverMap.find(elem) == crossoverMap.end()){
