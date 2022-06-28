@@ -13,9 +13,9 @@ namespace ga
         int endIndex;
         std::vector<int> *v;
 
-        Interval(std::vector<int> *v, int index1, int index2)
+        Interval(std::vector<int> &v, int index1, int index2)
         {
-            this->v = v;
+            this->v = &v;
             this->startIndex = std::min(index1, index2);
             this->endIndex = std::max(index1, index2);
         }
@@ -25,7 +25,7 @@ namespace ga
             int index1 = pick_random_element(v);
             int index2 = pick_random_element(v, index1);
 
-            *this = Interval(&v, index1, index2);
+            *this = Interval(v, index1, index2);
         }
 
         Interval(std::vector<int> &v, int bpIndex)
@@ -38,12 +38,11 @@ namespace ga
             int start = pick_random_element(breakpoints);
             int end = start < breakpoints.size() - 1 ? start + 1 : start - 1;
 
-            *this = Interval(&v, breakpoints[start], breakpoints[end]);
+            *this = Interval(v, breakpoints[start], breakpoints[end]);
         }
 
-        Interval(Interval &interval){
-            std::vector<int> v(interval.begin(), interval.end());
-
+        Interval(Interval &interval, std::vector<int> &v){
+            v.insert(v.begin(), interval.begin(), interval.end());
             *this = Interval(v);
         }
 
@@ -82,6 +81,15 @@ namespace ga
             }
 
             return fitness < this->population.best->fitness;
+        }
+
+        template <class _ContainerType, class _ElementType>
+        bool isInContainer(_ContainerType container, _ElementType elem){
+            return container.find(elem) != container.end();
+        }
+
+        bool isInRange(int base, int start, int end, int value){
+            return value >= base + start && value <= base + end;
         }
 
     public:
@@ -141,7 +149,9 @@ namespace ga
         {
             Interval p1Interval(p1->chromossome.genes, this->numberOfLocations);
             Interval p2Interval(p2->chromossome.genes, this->numberOfLocations);
-            Interval crossoverInterval(p1Interval);
+
+            std::vector<int> p1Part;
+            Interval crossoverInterval(p1Interval, p1Part);
             
             std::deque<int> p2Part(p2Interval.begin(), p2Interval.end());
 
@@ -157,15 +167,14 @@ namespace ga
             offspring.insert(offspring.begin() + p2Interval.startIndex, p2Part.begin(), p2Part.end());
             
             int i = -1;
-            auto it = std::remove_if(offspring.begin(), offspring.end(), [&crossoverMap, &p2Interval, &crossoverInterval, &i] (int elem) {
+            auto it = std::remove_if(offspring.begin(), offspring.end(), [&crossoverMap, &p2Interval, &crossoverInterval, &i, this] (int elem) {
                 i++;
 
-                if(crossoverMap.find(elem) == crossoverMap.end()){
+                if(!this->isInContainer(crossoverMap, elem)){
                     return false;
                 }
 
-                int intervalIndex = p2Interval.startIndex;
-                if(i < intervalIndex + crossoverInterval.startIndex || i > intervalIndex + crossoverInterval.endIndex){
+                if(!this->isInRange(p2Interval.startIndex, crossoverInterval.startIndex, crossoverInterval.endIndex, i)){
                     return true;
                 }
 
