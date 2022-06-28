@@ -41,7 +41,7 @@ namespace ga
         }
 
         auto end(){
-            return this->v->begin() + endIndex;
+            return this->v->begin() + endIndex + 1;
         }
 
         auto at(int pos){
@@ -141,18 +141,18 @@ namespace ga
             Interval p1Interval(p1->chromossome.genes, p1Breaks);
             Interval p2Interval(p2->chromossome.genes, p2Breaks);
             
-            std::vector<int> p1Part(p1Interval.begin(), p1Interval.end() + 1);
-            std::deque<int> p2Part(p2Interval.begin(), p2Interval.end() + 1);
+            std::vector<int> p1Part(p1Interval.begin(), p1Interval.end());
+            std::deque<int> p2Part(p2Interval.begin(), p2Interval.end());
 
             Interval crossoverInterval(p1Part);
-            std::unordered_set<int> crossoverMap(crossoverInterval.begin(), crossoverInterval.end() + 1);
+            std::unordered_set<int> crossoverMap(crossoverInterval.begin(), crossoverInterval.end());
 
             int rotationOffset = p1Interval.size()/2;
             rotate_deq(p2Part, rotationOffset);
 
             std::deque<int> offspring(p2->chromossome.genes.begin(), p2->chromossome.genes.begin() + this->numberOfLocations);
 
-            p2Part.insert(p2Part.begin() + crossoverInterval.startIndex, crossoverInterval.begin(), crossoverInterval.end() + 1);
+            p2Part.insert(p2Part.begin() + crossoverInterval.startIndex, crossoverInterval.begin(), crossoverInterval.end());
             offspring.erase(offspring.begin() + p2Interval.startIndex , offspring.begin() + p2Interval.endIndex + 1);
             offspring.insert(offspring.begin() + p2Interval.startIndex, p2Part.begin(), p2Part.end());
             
