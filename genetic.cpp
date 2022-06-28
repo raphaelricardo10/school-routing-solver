@@ -18,7 +18,7 @@ namespace ga
         do{
             randomValue = rand() % v.size();
             
-        } while(randomValue == uniqueValue)
+        } while(randomValue == uniqueValue);
 
         return rand() % v.size();
     }
