@@ -20,7 +20,7 @@ namespace ga
             
         } while(randomValue == uniqueValue);
 
-        return rand() % v.size();
+        return randomValue;
     }
 
     void rotate_deq(std::deque<int> &deq, int qty){
