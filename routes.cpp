@@ -28,9 +28,14 @@ namespace ga
             *this = Interval(&v, index1, index2);
         }
 
-        Interval(std::vector<int> &v, std::vector<int> &breakpoints)
+        Interval(std::vector<int> &v, int bpIndex)
         {
-            int start = pick_random_element<std::vector<int>>(breakpoints);
+            std::vector<int> breakpoints;
+            breakpoints.reserve(v.size() - bpIndex + 1);
+            breakpoints.push_back(0);
+            breakpoints.insert(breakpoints.begin() + 1, v.begin() + bpIndex, v.end());
+
+            int start = pick_random_element(breakpoints);
             int end = start < breakpoints.size() - 1 ? start + 1 : start - 1;
 
             *this = Interval(&v, breakpoints[start], breakpoints[end]);
@@ -128,18 +133,8 @@ namespace ga
 
         void make_crossover(Individual *p1, Individual *p2)
         {
-            std::vector<int> p1Breaks = {0};
-            std::vector<int> p2Breaks = {0};
-            for (int i = 0; i < this->numberOfRoutes; i++)
-            {
-                int breakIndex = this->numberOfLocations + i;
-                p1Breaks.push_back(p1->chromossome.genes[breakIndex]);
-                p2Breaks.push_back(p2->chromossome.genes[breakIndex]);
-            }
-
-
-            Interval p1Interval(p1->chromossome.genes, p1Breaks);
-            Interval p2Interval(p2->chromossome.genes, p2Breaks);
+            Interval p1Interval(p1->chromossome.genes, this->numberOfLocations);
+            Interval p2Interval(p2->chromossome.genes, this->numberOfLocations);
             
             std::vector<int> p1Part(p1Interval.begin(), p1Interval.end());
             std::deque<int> p2Part(p2Interval.begin(), p2Interval.end());
