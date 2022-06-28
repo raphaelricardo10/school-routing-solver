@@ -157,9 +157,9 @@ namespace ga
             offspring.insert(offspring.begin() + p2Interval.startIndex, p2Part.begin(), p2Part.end());
             
             int i = -1;
-            auto it = std::remove_if(offspring.begin(), offspring.end(), [crossoverMap, p2Interval, crossoverInterval, offspring, &i, &removed] (int elem) {
+            auto it = std::remove_if(offspring.begin(), offspring.end(), [crossoverMap, p2Interval, crossoverInterval, &i] (int elem) {
                 i++;
-                
+
                 if(crossoverMap.find(elem) == crossoverMap.end()){
                     return false;
                 }
