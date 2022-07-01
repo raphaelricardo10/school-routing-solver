@@ -6,7 +6,6 @@
 #include <set>
 #include <unordered_map>
 
-
 namespace ga
 {
     template <class _DistributionType, class _DataType>
@@ -28,16 +27,19 @@ namespace ga
             this->distribution = _DistributionType(minValue, maxValue);
         }
 
-        _DataType get_number(){
+        _DataType get_number()
+        {
             return this->distribution(this->generator);
         }
 
         template <class _Container>
-        void set_range(_Container &container){
+        void set_range(_Container &container)
+        {
             this->distribution = _DistributionType(0, container.size() - 1);
         }
 
-        void set_range(_DataType minValue, _DataType maxValue){
+        void set_range(_DataType minValue, _DataType maxValue)
+        {
             this->distribution = _DistributionType(minValue, maxValue);
         }
     };
@@ -77,8 +79,8 @@ namespace ga
                 do
                 {
                     breakpoint = randomizer.get_number();
-                    
-                }while (this->is_repeated(breakpoint));
+
+                } while (this->is_repeated(breakpoint));
 
                 this->map[breakpoint] = breakpoint;
                 this->values.insert(breakpoint);

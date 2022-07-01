@@ -37,7 +37,7 @@ namespace ga
             breakpoints.insert(breakpoints.begin() + 1, v.begin() + bpIndex, v.end());
 
             randomizer.set_range(breakpoints);
-            
+
             int start = randomizer.get_number();
             int end = start < breakpoints.size() - 1 ? start + 1 : start - 1;
 
