@@ -122,12 +122,13 @@ namespace ga
 
         void generate_distances(int individualSize)
         {
+            RandomizerInt randomizer(1, 100);
             for (int i = 0; i < individualSize; i++)
             {
                 std::vector<int> v;
                 for (int j = 0; j < i; j++)
                 {
-                    v.push_back(1 + (rand() % individualSize - 1));
+                    v.push_back(randomizer.get_number());
                 }
                 this->distances.push_back(v);
             }
