@@ -198,8 +198,8 @@ namespace ga
 
         void run()
         {
-            std::function<void(Individual *)> boundCallback = std::bind(&RoutingGA::calculate_fitness, this, std::placeholders::_1);
-            this->population.map(boundCallback);
+            std::function<void(Individual *)> bound_calculate_fitness = std::bind(&RoutingGA::calculate_fitness, this, std::placeholders::_1);
+            this->population.map(bound_calculate_fitness);
 
             Individual *p1, *p2;
             std::tie(p1, p2) = this->make_selection();
