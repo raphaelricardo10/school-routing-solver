@@ -9,9 +9,6 @@
 
 namespace ga
 {
-    typedef std::uniform_int_distribution<int> UniformIntDistribution;
-    typedef Randomizer<UniformIntDistribution, int> RandomizerInt;
-
     template <class _DistributionType, class _DataType>
     class Randomizer
     {
@@ -19,6 +16,11 @@ namespace ga
         std::random_device rd;
         std::default_random_engine generator;
         _DistributionType distribution;
+
+        Randomizer()
+        {
+            this->generator = std::default_random_engine(this->rd());
+        }
 
         Randomizer(_DataType minValue, _DataType maxValue)
         {
@@ -31,24 +33,8 @@ namespace ga
         }
     };
 
-    template <class _Container>
-    int pick_random_element(_Container &v)
-    {
-        return rand() % v.size();
-    }
-
-    template <class _Container>
-    int pick_random_element(_Container &v, int uniqueValue)
-    {
-        int randomValue;
-        do
-        {
-            randomValue = rand() % v.size();
-
-        } while (randomValue == uniqueValue);
-
-        return randomValue;
-    }
+    typedef std::uniform_int_distribution<int> UniformIntDistribution;
+    typedef Randomizer<UniformIntDistribution, int> RandomizerInt;
 
     void rotate_deq(std::deque<int> &deq, int qty)
     {
@@ -71,21 +57,20 @@ namespace ga
     public:
         int value;
 
-        Breakpoint(std::vector<int> &v, bool allowZero)
+        Breakpoint(RandomizerInt &randomizer, bool allowZero)
         {
-            this->value = pick_random_element<std::vector<int>>(v);
-            ;
+            this->value = randomizer.get_number();
 
             if (!allowZero)
             {
                 while (this->is_zero())
                 {
-                    this->value = pick_random_element<std::vector<int>>(v);
+                    this->value = randomizer.get_number();
                 }
             }
             else
             {
-                this->value = pick_random_element<std::vector<int>>(v);
+                this->value = randomizer.get_number();
             }
         }
     };
@@ -105,12 +90,13 @@ namespace ga
 
         BreakpointSet(std::vector<int> &v, int qty)
         {
+            RandomizerInt randomizer(0, v.size() - 1);
             for (int i = 0; i < qty; i++)
             {
-                Breakpoint bp = Breakpoint(v, false);
+                Breakpoint bp = Breakpoint(randomizer, false);
                 while (this->is_repeated(bp))
                 {
-                    bp = Breakpoint(v, false);
+                    bp = Breakpoint(randomizer, false);
                 }
 
                 this->map[bp.value] = bp.value;
@@ -237,10 +223,10 @@ namespace ga
         // Tournament selection
         int select_parent()
         {
-            int winner = pick_random_element<std::vector<Individual>>(this->population.individuals);
+            int winner = this->randomizer.get_number();
             for (int i = 1; i < this->selectionK; i++)
             {
-                int chosen = pick_random_element<std::vector<Individual>>(this->population.individuals);
+                int chosen = this->randomizer.get_number();
 
                 if (this->population.individuals[i].fitness < this->population.individuals[winner].fitness)
                 {
@@ -264,12 +250,14 @@ namespace ga
         int selectionK;
         float mutationRate;
         Population population;
+        RandomizerInt randomizer;
 
         virtual void calculate_fitness(Individual *individual) = 0;
         virtual void make_crossover(Individual *p1, Individual *p2) = 0;
 
         auto make_selection()
         {
+            this->randomizer.distribution = UniformIntDistribution(0, this->population.individuals.size() - 1);
             int p1 = this->select_parent();
             int p2 = this->select_parent();
 

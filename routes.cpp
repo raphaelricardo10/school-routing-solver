@@ -20,31 +20,34 @@ namespace ga
             this->endIndex = std::max(index1, index2);
         }
 
-        Interval(std::vector<int> &v)
+        Interval(std::vector<int> &v, RandomizerInt &randomizer)
         {
-            int index1 = pick_random_element(v);
-            int index2 = pick_random_element(v, index1);
+            randomizer.distribution = UniformIntDistribution(0, v.size() - 1);
+            int index1 = randomizer.get_number();
+            int index2 = randomizer.get_number();
 
             *this = Interval(v, index1, index2);
         }
 
-        Interval(std::vector<int> &v, int bpIndex)
+        Interval(std::vector<int> &v, int bpIndex, RandomizerInt &randomizer)
         {
             std::vector<int> breakpoints;
             breakpoints.reserve(v.size() - bpIndex + 1);
             breakpoints.push_back(0);
             breakpoints.insert(breakpoints.begin() + 1, v.begin() + bpIndex, v.end());
 
-            int start = pick_random_element(breakpoints);
+            randomizer.distribution = UniformIntDistribution(0, breakpoints.size() - 1);
+            
+            int start = randomizer.get_number();
             int end = start < breakpoints.size() - 1 ? start + 1 : start - 1;
 
             *this = Interval(v, breakpoints[start], breakpoints[end]);
         }
 
-        Interval(Interval &interval, std::vector<int> &v)
+        Interval(Interval &interval, std::vector<int> &v, RandomizerInt &randomizer)
         {
             v.insert(v.begin(), interval.begin(), interval.end());
-            *this = Interval(v);
+            *this = Interval(v, randomizer);
         }
 
         std::vector<int>::iterator begin()
@@ -156,11 +159,11 @@ namespace ga
 
         void make_crossover(Individual *p1, Individual *p2)
         {
-            Interval p1Interval(p1->chromossome.genes, this->numberOfLocations);
-            Interval p2Interval(p2->chromossome.genes, this->numberOfLocations);
+            Interval p1Interval(p1->chromossome.genes, this->numberOfLocations, this->randomizer);
+            Interval p2Interval(p2->chromossome.genes, this->numberOfLocations, this->randomizer);
 
             std::vector<int> p1Part;
-            Interval crossoverInterval(p1Interval, p1Part);
+            Interval crossoverInterval(p1Interval, p1Part, this->randomizer);
 
             std::deque<int> p2Part(p2Interval.begin(), p2Interval.end());
 
