@@ -217,24 +217,27 @@ namespace ga
 
         void run()
         {
-            this->population.map([this] (Individual *individual){
-                this->calculate_fitness(individual);
+            for(this->population.generation; this->population.generation < this->maxGenerations; this->population.generation++)
+            {
+                this->population.map([this] (Individual *individual){
+                    this->calculate_fitness(individual);
 
-                if (this->should_update_best(individual->fitness))
-                {
-                    this->population.best = individual;
-                }
+                    if (this->should_update_best(individual->fitness))
+                    {
+                        this->population.best = individual;
+                    }
 
-            });
+                });
 
-            int p1, p2;
-            Individual offspring1, offspring2;
+                int p1, p2;
+                Individual offspring1, offspring2;
 
-            std::tie(p1, p2) = this->make_selection();
-            std::tie(offspring1, offspring2) = this->make_crossover(this->population.individuals[p1], this->population.individuals[p2]);
+                std::tie(p1, p2) = this->make_selection();
+                std::tie(offspring1, offspring2) = this->make_crossover(this->population.individuals[p1], this->population.individuals[p2]);
 
-            this->population.individuals[p1] = offspring1;
-            this->population.individuals[p2] = offspring2;
+                this->population.individuals[p1] = offspring1;
+                this->population.individuals[p2] = offspring2;
+            }
         }
     };
 }
