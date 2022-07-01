@@ -32,13 +32,13 @@ namespace ga
             return this->distribution(this->generator);
         }
 
-        _DataType get_number(std::unordered_set<_DataType> &map)
+        _DataType get_number(std::unordered_set<_DataType> &set)
         {
             _DataType number;
             do
             {
                 number = this->get_number();
-            } while (map.find(number) != map.end());
+            } while (set.find(number) != set.end());
 
             return number;
         }
@@ -76,9 +76,8 @@ namespace ga
     public:
         std::set<int> values;
 
-        BreakpointSet(std::vector<int> &v, int qty)
+        BreakpointSet(std::vector<int> &v, int qty, RandomizerInt &randomizer)
         {
-            RandomizerInt randomizer(1, v.size() - 1);
             for (int i = 0; i < qty; i++)
             {
                 int breakpoint = randomizer.get_number(this->unordered_values);
@@ -136,9 +135,9 @@ namespace ga
     class Individual
     {
     private:
-        void generate_breakpoints(int qty)
+        void generate_breakpoints(int qty, RandomizerInt &randomizer)
         {
-            BreakpointSet breakpoints(this->chromossome.genes, qty);
+            BreakpointSet breakpoints(this->chromossome.genes, qty, randomizer);
 
             this->chromossome.genes.reserve(breakpoints.values.size());
             this->chromossome.genes.insert(this->chromossome.genes.end(), breakpoints.values.begin(), breakpoints.values.end());
@@ -148,11 +147,11 @@ namespace ga
         int fitness;
         Chromossome chromossome;
 
-        Individual(std::vector<int> genes, int qtyBreaks)
+        Individual(std::vector<int> genes, int qtyBreaks, RandomizerInt &randomizer)
         {
             this->fitness = 0;
             this->chromossome.genes = genes;
-            this->generate_breakpoints(qtyBreaks);
+            this->generate_breakpoints(qtyBreaks, randomizer);
         }
     };
 
@@ -189,11 +188,12 @@ namespace ga
         void generate_individuals(int qtyBreaks)
         {
             this->permutator.shuffle();
+            RandomizerInt randomizer(0, this->permutator.vector.size() - 1);
 
             for (int i = 0; i < this->size; i++)
             {
                 this->permutator.shuffle();
-                Individual individual(this->permutator.vector, qtyBreaks);
+                Individual individual(this->permutator.vector, qtyBreaks, randomizer);
                 this->individuals.push_back(individual);
             }
         }
@@ -203,28 +203,31 @@ namespace ga
     {
     private:
         // Tournament selection
-        int select_parent()
+        int select_parent(std::unordered_set<int> &parents)
         {
-            int winner = this->randomizer.get_number();
-            for (int i = 1; i < this->selectionK; i++)
+            int winner = this->randomizer.get_number(parents);
+            parents.insert(winner);
+
+            for(int i = 1; i < this->selectionK; i++)
             {
-                int chosen = this->randomizer.get_number();
+                int chosen = this->randomizer.get_number(parents);
+                parents.insert(chosen);
 
                 if (this->population.individuals[i].fitness < this->population.individuals[winner].fitness)
                 {
                     winner = chosen;
                 }
+
+                i++;
             }
 
             return winner;
         };
 
-        void avoid_repeating_parents(int &p1, int &p2)
+        int select_parent(std::unordered_set<int> &parents, int parent)
         {
-            while (p1 == p2)
-            {
-                p2 = this->select_parent();
-            }
+            parents.insert(parent);
+            return this->select_parent(parents);
         }
 
     public:
@@ -240,10 +243,9 @@ namespace ga
         auto make_selection()
         {
             this->randomizer.set_range(this->population.individuals);
-            int p1 = this->select_parent();
-            int p2 = this->select_parent();
-
-            avoid_repeating_parents(p1, p2);
+            std::unordered_set<int> parents;
+            int p1 = this->select_parent(parents);
+            int p2 = this->select_parent(parents, p1);
 
             return std::make_tuple(&population.individuals[p1], &population.individuals[p2]);
         };
