@@ -55,43 +55,14 @@ namespace ga
         }
     }
 
-    class Breakpoint
-    {
-    private:
-        bool is_zero()
-        {
-            return this->value == 0;
-        }
-
-    public:
-        int value;
-
-        Breakpoint(RandomizerInt &randomizer, bool allowZero)
-        {
-            this->value = randomizer.get_number();
-
-            if (!allowZero)
-            {
-                while (this->is_zero())
-                {
-                    this->value = randomizer.get_number();
-                }
-            }
-            else
-            {
-                this->value = randomizer.get_number();
-            }
-        }
-    };
-
     class BreakpointSet
     {
     private:
         std::unordered_map<int, int> map;
 
-        bool is_repeated(Breakpoint &breakpoint)
+        bool is_repeated(int breakpoint)
         {
-            return this->map.count(breakpoint.value);
+            return this->map.count(breakpoint);
         }
 
     public:
@@ -102,14 +73,15 @@ namespace ga
             RandomizerInt randomizer(0, v.size() - 1);
             for (int i = 0; i < qty; i++)
             {
-                Breakpoint bp = Breakpoint(randomizer, false);
-                while (this->is_repeated(bp))
+                int breakpoint;
+                do
                 {
-                    bp = Breakpoint(randomizer, false);
-                }
+                    breakpoint = randomizer.get_number();
+                    
+                }while (this->is_repeated(breakpoint));
 
-                this->map[bp.value] = bp.value;
-                this->values.insert(bp.value);
+                this->map[breakpoint] = breakpoint;
+                this->values.insert(breakpoint);
             }
         }
     };
