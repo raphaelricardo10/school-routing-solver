@@ -1,6 +1,7 @@
 #include <functional>
 #include <tuple>
 #include <deque>
+#include <unordered_set>
 #include "genetic.cpp"
 
 namespace ga
