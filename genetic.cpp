@@ -172,6 +172,11 @@ namespace ga
             this->fitness = 0;
             this->chromossome.genes = genes;
         }
+
+        Individual()
+        {
+            this->fitness = 0;
+        }
     };
 
     class Population
