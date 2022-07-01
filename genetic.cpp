@@ -31,6 +31,15 @@ namespace ga
         _DataType get_number(){
             return this->distribution(this->generator);
         }
+
+        template <class _Container>
+        void set_range(_Container &container){
+            this->distribution = _DistributionType(0, container.size() - 1);
+        }
+
+        void set_range(_DataType minValue, _DataType maxValue){
+            this->distribution = _DistributionType(minValue, maxValue);
+        }
     };
 
     typedef std::uniform_int_distribution<int> UniformIntDistribution;
@@ -257,7 +266,7 @@ namespace ga
 
         auto make_selection()
         {
-            this->randomizer.distribution = UniformIntDistribution(0, this->population.individuals.size() - 1);
+            this->randomizer.set_range(this->population.individuals);
             int p1 = this->select_parent();
             int p2 = this->select_parent();
 

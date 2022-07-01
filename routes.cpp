@@ -22,7 +22,7 @@ namespace ga
 
         Interval(std::vector<int> &v, RandomizerInt &randomizer)
         {
-            randomizer.distribution = UniformIntDistribution(0, v.size() - 1);
+            randomizer.set_range(v);
             int index1 = randomizer.get_number();
             int index2 = randomizer.get_number();
 
@@ -36,7 +36,7 @@ namespace ga
             breakpoints.push_back(0);
             breakpoints.insert(breakpoints.begin() + 1, v.begin() + bpIndex, v.end());
 
-            randomizer.distribution = UniformIntDistribution(0, breakpoints.size() - 1);
+            randomizer.set_range(breakpoints);
             
             int start = randomizer.get_number();
             int end = start < breakpoints.size() - 1 ? start + 1 : start - 1;
