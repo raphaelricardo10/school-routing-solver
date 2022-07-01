@@ -249,7 +249,7 @@ namespace ga
         RandomizerInt randomizer;
 
         virtual void calculate_fitness(Individual *individual) = 0;
-        virtual void make_crossover(Individual *p1, Individual *p2) = 0;
+        virtual void make_crossover(Individual &p1, Individual &p2) = 0;
 
         auto make_selection()
         {
