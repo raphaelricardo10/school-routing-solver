@@ -111,7 +111,6 @@ namespace ga
 
         RoutingGA(int maxGenerations, int populationSize, int numLocations, int numRoutes, int selectionK, float mutationRate)
         {
-            srand(time(0));
             this->maxGenerations = maxGenerations;
             this->numberOfRoutes = numRoutes;
             this->selectionK = selectionK;
