@@ -227,11 +227,11 @@ namespace ga
 
             });
 
-            Individual *p1, *p2;
+            int p1, p2;
             Individual offspring1, offspring2;
 
             std::tie(p1, p2) = this->make_selection();
-            std::tie(offspring1, offspring2) = this->make_crossover(*p1, *p2);
+            std::tie(offspring1, offspring2) = this->make_crossover(this->population.individuals[p1], this->population.individuals[p2]);
         }
     };
 }
