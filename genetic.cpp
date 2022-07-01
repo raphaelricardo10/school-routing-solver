@@ -26,7 +26,7 @@ namespace ga
             this->distribution = _DistributionType(minValue, maxValue);
         }
 
-        _DataType run(){
+        _DataType get_number(){
             return this->distribution(this->generator);
         }
     };
