@@ -104,6 +104,45 @@ namespace ga
             return value >= base + start && value <= base + end;
         }
 
+        void make_offspring(Individual &p1, Individual &p2)
+        {
+            Interval p1Interval(p1.chromossome.genes, this->numberOfLocations, this->randomizer);
+            Interval p2Interval(p2.chromossome.genes, this->numberOfLocations, this->randomizer);
+
+            std::vector<int> p1Part;
+            Interval crossoverInterval(p1Interval, p1Part, this->randomizer);
+
+            std::deque<int> p2Part(p2Interval.begin(), p2Interval.end());
+
+            std::unordered_set<int> crossoverMap(crossoverInterval.begin(), crossoverInterval.end());
+
+            int rotationOffset = p1Interval.size() / 2;
+            rotate_deq(p2Part, rotationOffset);
+
+            std::deque<int> offspring(p2.chromossome.genes.begin(), p2.chromossome.genes.begin() + this->numberOfLocations);
+
+            p2Part.insert(p2Part.begin() + crossoverInterval.startIndex, crossoverInterval.begin(), crossoverInterval.end());
+            offspring.erase(offspring.begin() + p2Interval.startIndex, offspring.begin() + p2Interval.endIndex + 1);
+            offspring.insert(offspring.begin() + p2Interval.startIndex, p2Part.begin(), p2Part.end());
+
+            int i = -1;
+            auto it = std::remove_if(offspring.begin(), offspring.end(), [&crossoverMap, &p2Interval, &crossoverInterval, &i, this](int elem)
+                                     {
+                i++;
+
+                if(!this->isInContainer(crossoverMap, elem)){
+                    return false;
+                }
+
+                if(!this->isInRange(p2Interval.startIndex, crossoverInterval.startIndex, crossoverInterval.endIndex, i)){
+                    return true;
+                }
+
+                return false; });
+
+            offspring.erase(it, offspring.end());
+        }
+
     public:
         int numberOfRoutes;
         int numberOfLocations;
@@ -157,43 +196,9 @@ namespace ga
             }
         }
 
-        void make_crossover(Individual *p1, Individual *p2)
+        void make_crossover(Individual &p1, Individual &p2)
         {
-            Interval p1Interval(p1->chromossome.genes, this->numberOfLocations, this->randomizer);
-            Interval p2Interval(p2->chromossome.genes, this->numberOfLocations, this->randomizer);
-
-            std::vector<int> p1Part;
-            Interval crossoverInterval(p1Interval, p1Part, this->randomizer);
-
-            std::deque<int> p2Part(p2Interval.begin(), p2Interval.end());
-
-            std::unordered_set<int> crossoverMap(crossoverInterval.begin(), crossoverInterval.end());
-
-            int rotationOffset = p1Interval.size() / 2;
-            rotate_deq(p2Part, rotationOffset);
-
-            std::deque<int> offspring(p2->chromossome.genes.begin(), p2->chromossome.genes.begin() + this->numberOfLocations);
-
-            p2Part.insert(p2Part.begin() + crossoverInterval.startIndex, crossoverInterval.begin(), crossoverInterval.end());
-            offspring.erase(offspring.begin() + p2Interval.startIndex, offspring.begin() + p2Interval.endIndex + 1);
-            offspring.insert(offspring.begin() + p2Interval.startIndex, p2Part.begin(), p2Part.end());
-
-            int i = -1;
-            auto it = std::remove_if(offspring.begin(), offspring.end(), [&crossoverMap, &p2Interval, &crossoverInterval, &i, this](int elem)
-                                     {
-                i++;
-
-                if(!this->isInContainer(crossoverMap, elem)){
-                    return false;
-                }
-
-                if(!this->isInRange(p2Interval.startIndex, crossoverInterval.startIndex, crossoverInterval.endIndex, i)){
-                    return true;
-                }
-
-                return false; });
-
-            offspring.erase(it, offspring.end());
+            make_offspring(p1, p2);
         }
 
         void run()
@@ -204,7 +209,7 @@ namespace ga
             Individual *p1, *p2;
             std::tie(p1, p2) = this->make_selection();
 
-            this->make_crossover(p1, p2);
+            this->make_crossover(*p1, *p2);
         }
     };
 }
