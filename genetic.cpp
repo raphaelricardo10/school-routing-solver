@@ -32,6 +32,17 @@ namespace ga
             return this->distribution(this->generator);
         }
 
+        _DataType get_number(std::unordered_set<_DataType> &map)
+        {
+            _DataType number;
+            do
+            {
+                number = this->get_number();
+            } while (map.find(number) != map.end());
+
+            return number;
+        }
+
         template <class _Container>
         void set_range(_Container &container)
         {
@@ -62,27 +73,17 @@ namespace ga
     private:
         std::unordered_set<int> unordered_values;
 
-        bool is_repeated(int breakpoint)
-        {
-            return this->map.count(breakpoint);
-        }
-
     public:
         std::set<int> values;
 
         BreakpointSet(std::vector<int> &v, int qty)
         {
-            RandomizerInt randomizer(0, v.size() - 1);
+            RandomizerInt randomizer(1, v.size() - 1);
             for (int i = 0; i < qty; i++)
             {
-                int breakpoint;
-                do
-                {
-                    breakpoint = randomizer.get_number();
+                int breakpoint = randomizer.get_number(this->unordered_values);
 
-                } while (this->is_repeated(breakpoint));
-
-                this->map[breakpoint] = breakpoint;
+                this->unordered_values.insert(breakpoint);
                 this->values.insert(breakpoint);
             }
         }
