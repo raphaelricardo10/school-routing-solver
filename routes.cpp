@@ -24,7 +24,7 @@ namespace ga
         {
             randomizer.set_range(v);
             int index1 = randomizer.get_number();
-            int index2 = randomizer.get_number();
+            int index2 = randomizer.get_number(index1);
 
             *this = Interval(v, index1, index2);
         }
