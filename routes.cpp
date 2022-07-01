@@ -104,7 +104,7 @@ namespace ga
             return value >= base + start && value <= base + end;
         }
 
-        void make_offspring(Individual &p1, Individual &p2)
+        Individual make_offspring(Individual &p1, Individual &p2)
         {
             Interval p1Interval(p1.chromossome.genes, this->numberOfLocations, this->randomizer);
             Interval p2Interval(p2.chromossome.genes, this->numberOfLocations, this->randomizer);
@@ -141,6 +141,9 @@ namespace ga
                 return false; });
 
             offspring.erase(it, offspring.end());
+            offspring.insert(offspring.end(), p2.chromossome.genes.begin() + numberOfLocations, p2.chromossome.genes.end());
+
+            return Individual(std::vector<int>(offspring.begin(), offspring.end()));
         }
 
     public:
@@ -189,27 +192,46 @@ namespace ga
             }
 
             individual->fitness = totalDistance;
-
-            if (this->should_update_best(individual->fitness))
-            {
-                this->population.best = individual;
-            }
         }
 
-        void make_crossover(Individual &p1, Individual &p2)
+        std::tuple<Individual, Individual> make_crossover(Individual &p1, Individual &p2)
         {
-            make_offspring(p1, p2);
+            Individual offspring1, offspring2;
+
+            do
+            {
+                offspring1 = make_offspring(p1, p2);
+                this->calculate_fitness(&offspring1);
+
+            } while (offspring1.fitness > this->population.best->fitness);
+
+            do
+            {
+                offspring2 = make_offspring(p2, p1);
+                this->calculate_fitness(&offspring2);
+
+            } while (offspring2.fitness > this->population.best->fitness);
+
+            return std::make_tuple(offspring1, offspring2);
         }
 
         void run()
         {
-            std::function<void(Individual *)> bound_calculate_fitness = std::bind(&RoutingGA::calculate_fitness, this, std::placeholders::_1);
-            this->population.map(bound_calculate_fitness);
+            this->population.map([this] (Individual *individual){
+                this->calculate_fitness(individual);
+
+                if (this->should_update_best(individual->fitness))
+                {
+                    this->population.best = individual;
+                }
+
+            });
 
             Individual *p1, *p2;
-            std::tie(p1, p2) = this->make_selection();
+            Individual offspring1, offspring2;
 
-            this->make_crossover(*p1, *p2);
+            std::tie(p1, p2) = this->make_selection();
+            std::tie(offspring1, offspring2) = this->make_crossover(*p1, *p2);
         }
     };
 }
