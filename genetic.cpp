@@ -139,10 +139,8 @@ namespace ga
         {
             BreakpointSet breakpoints(this->chromossome.genes, qty);
 
-            for (int breakpoint : breakpoints.values)
-            {
-                this->chromossome.genes.push_back(breakpoint);
-            }
+            this->chromossome.genes.reserve(breakpoints.values.size());
+            this->chromossome.genes.insert(this->chromossome.genes.end(), breakpoints.values.begin(), breakpoints.values.end());
         }
 
     public:
