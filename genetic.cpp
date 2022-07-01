@@ -93,7 +93,10 @@ namespace ga
             {
                 int breakpoint = randomizer.get_number(this->unordered_values);
 
+                this->unordered_values.insert(breakpoint - 1);
                 this->unordered_values.insert(breakpoint);
+                this->unordered_values.insert(breakpoint + 1);
+
                 this->values.insert(breakpoint);
             }
         }
@@ -199,7 +202,7 @@ namespace ga
         void generate_individuals(int qtyBreaks)
         {
             this->permutator.shuffle();
-            RandomizerInt randomizer(0, this->permutator.vector.size() - 1);
+            RandomizerInt randomizer(2, this->permutator.vector.size() - 1);
 
             for (int i = 0; i < this->size; i++)
             {
