@@ -246,7 +246,7 @@ namespace ga
             return winner;
         };
 
-        void avoid_repeating_parents(int p1, int p2)
+        void avoid_repeating_parents(int &p1, int &p2)
         {
             while (p1 == p2)
             {
