@@ -15,60 +15,75 @@ namespace ga
     int pick_random_element(_Container &v, int uniqueValue)
     {
         int randomValue;
-        do{
+        do
+        {
             randomValue = rand() % v.size();
-            
-        } while(randomValue == uniqueValue);
+
+        } while (randomValue == uniqueValue);
 
         return randomValue;
     }
 
-    void rotate_deq(std::deque<int> &deq, int qty){
-        for(int i = 0; i < qty; i++){
+    void rotate_deq(std::deque<int> &deq, int qty)
+    {
+        for (int i = 0; i < qty; i++)
+        {
             int front = deq.front();
             deq.pop_front();
             deq.push_back(front);
         }
     }
 
-    class Breakpoint{
+    class Breakpoint
+    {
     private:
-        bool is_zero(){
+        bool is_zero()
+        {
             return this->value == 0;
         }
+
     public:
         int value;
 
-        Breakpoint(std::vector<int> &v, bool allowZero){
-            this->value = pick_random_element<std::vector<int>>(v);;
+        Breakpoint(std::vector<int> &v, bool allowZero)
+        {
+            this->value = pick_random_element<std::vector<int>>(v);
+            ;
 
-            if(!allowZero){
-                while(this->is_zero()){
+            if (!allowZero)
+            {
+                while (this->is_zero())
+                {
                     this->value = pick_random_element<std::vector<int>>(v);
                 }
             }
-            else{
+            else
+            {
                 this->value = pick_random_element<std::vector<int>>(v);
             }
         }
     };
 
-    class BreakpointSet{
+    class BreakpointSet
+    {
     private:
         std::unordered_map<int, int> map;
 
-        bool is_repeated(Breakpoint &breakpoint){
+        bool is_repeated(Breakpoint &breakpoint)
+        {
             return this->map.count(breakpoint.value);
         }
 
     public:
         std::set<int> values;
 
-        BreakpointSet(std::vector<int> &v, int qty){
+        BreakpointSet(std::vector<int> &v, int qty)
+        {
             for (int i = 0; i < qty; i++)
             {
                 Breakpoint bp = Breakpoint(v, false);
-                while(this->is_repeated(bp)){
+                while (this->is_repeated(bp))
+                {
                     bp = Breakpoint(v, false);
                 }
 
@@ -129,7 +144,8 @@ namespace ga
         {
             BreakpointSet breakpoints(this->chromossome.genes, qty);
 
-            for (int breakpoint : breakpoints.values){
+            for (int breakpoint : breakpoints.values)
+            {
                 this->chromossome.genes.push_back(breakpoint);
             }
         }
@@ -209,8 +225,10 @@ namespace ga
             return winner;
         };
 
-        void avoid_repeating_parents(int p1, int p2){
-            while(p1 == p2){
+        void avoid_repeating_parents(int p1, int p2)
+        {
+            while (p1 == p2)
+            {
                 p2 = this->select_parent();
             }
         }

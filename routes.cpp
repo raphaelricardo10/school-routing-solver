@@ -1,7 +1,6 @@
 #include <functional>
 #include <tuple>
 #include <deque>
-#include <ctime>
 #include "genetic.cpp"
 
 namespace ga
@@ -41,29 +40,36 @@ namespace ga
             *this = Interval(v, breakpoints[start], breakpoints[end]);
         }
 
-        Interval(Interval &interval, std::vector<int> &v){
+        Interval(Interval &interval, std::vector<int> &v)
+        {
             v.insert(v.begin(), interval.begin(), interval.end());
             *this = Interval(v);
         }
 
-        std::vector<int>::iterator begin(){
+        std::vector<int>::iterator begin()
+        {
             return this->v->begin() + startIndex;
         }
 
-        std::vector<int>::iterator end(){
+        std::vector<int>::iterator end()
+        {
             return this->v->begin() + endIndex + 1;
         }
 
-        std::vector<int>::iterator at(int pos){
+        std::vector<int>::iterator at(int pos)
+        {
             return this->v->begin() + startIndex + pos;
         }
 
-        int size(){
+        int size()
+        {
             return this->endIndex - this->startIndex + 1;
         }
 
-        void rotate_left(int n){
-            for(int i = 0; i < n; i++){
+        void rotate_left(int n)
+        {
+            for (int i = 0; i < n; i++)
+            {
                 this->v->insert(this->end() + 1, *this->begin());
                 this->v->erase(this->begin());
             }
@@ -84,11 +90,13 @@ namespace ga
         }
 
         template <class _ContainerType, class _ElementType>
-        bool isInContainer(_ContainerType container, _ElementType elem){
+        bool isInContainer(_ContainerType container, _ElementType elem)
+        {
             return container.find(elem) != container.end();
         }
 
-        bool isInRange(int base, int start, int end, int value){
+        bool isInRange(int base, int start, int end, int value)
+        {
             return value >= base + start && value <= base + end;
         }
 
@@ -152,22 +160,23 @@ namespace ga
 
             std::vector<int> p1Part;
             Interval crossoverInterval(p1Interval, p1Part);
-            
+
             std::deque<int> p2Part(p2Interval.begin(), p2Interval.end());
 
             std::unordered_set<int> crossoverMap(crossoverInterval.begin(), crossoverInterval.end());
 
-            int rotationOffset = p1Interval.size()/2;
+            int rotationOffset = p1Interval.size() / 2;
             rotate_deq(p2Part, rotationOffset);
 
             std::deque<int> offspring(p2->chromossome.genes.begin(), p2->chromossome.genes.begin() + this->numberOfLocations);
 
             p2Part.insert(p2Part.begin() + crossoverInterval.startIndex, crossoverInterval.begin(), crossoverInterval.end());
-            offspring.erase(offspring.begin() + p2Interval.startIndex , offspring.begin() + p2Interval.endIndex + 1);
+            offspring.erase(offspring.begin() + p2Interval.startIndex, offspring.begin() + p2Interval.endIndex + 1);
             offspring.insert(offspring.begin() + p2Interval.startIndex, p2Part.begin(), p2Part.end());
-            
+
             int i = -1;
-            auto it = std::remove_if(offspring.begin(), offspring.end(), [&crossoverMap, &p2Interval, &crossoverInterval, &i, this] (int elem) {
+            auto it = std::remove_if(offspring.begin(), offspring.end(), [&crossoverMap, &p2Interval, &crossoverInterval, &i, this](int elem)
+                                     {
                 i++;
 
                 if(!this->isInContainer(crossoverMap, elem)){
@@ -178,8 +187,7 @@ namespace ga
                     return true;
                 }
 
-                return false;
-            });
+                return false; });
 
             offspring.erase(it, offspring.end());
         }
