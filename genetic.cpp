@@ -32,6 +32,17 @@ namespace ga
             return this->distribution(this->generator);
         }
 
+        _DataType get_number(_DataType uniqueValue)
+        {
+            _DataType number;
+            do
+            {
+                number = this->get_number();
+            } while (number == uniqueValue);
+
+            return number;
+        }
+
         _DataType get_number(std::unordered_set<_DataType> &set)
         {
             _DataType number;
@@ -208,7 +219,7 @@ namespace ga
             int winner = this->randomizer.get_number(parents);
             parents.insert(winner);
 
-            for(int i = 1; i < this->selectionK; i++)
+            for (int i = 1; i < this->selectionK; i++)
             {
                 int chosen = this->randomizer.get_number(parents);
                 parents.insert(chosen);
