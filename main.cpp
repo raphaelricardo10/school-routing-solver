@@ -15,26 +15,13 @@ void print_individual(ga::Individual *individual)
 int main()
 {
     int popSize = 5;
-    int qtyLocations = 10;
+    int qtyLocations = 100;
     int qtyRoutes = 3;
     int maxGenerations = 100;
     int selectionK = 3;
     float mutationRate = 0.65;
 
     ga::RoutingGA ga(maxGenerations, popSize, qtyLocations, qtyRoutes, selectionK, mutationRate);
-
-    ga.population.map(print_individual);
-
-    for (int i = 0; i < ga.distances.size(); i++)
-    {
-        std::cout << "Line num: " << i << "\tdata: ";
-        for (int j = 0; j < ga.distances[i].size(); j++)
-        {
-            std::cout << ga.distances[i][j] << " ";
-        }
-        std::cout << '\n';
-    }
-
     ga.run();
 
     return 0;
