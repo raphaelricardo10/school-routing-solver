@@ -60,7 +60,7 @@ namespace ga
     class BreakpointSet
     {
     private:
-        std::unordered_map<int, int> map;
+        std::unordered_set<int> unordered_values;
 
         bool is_repeated(int breakpoint)
         {
