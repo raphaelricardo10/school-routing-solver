@@ -6,8 +6,31 @@
 #include <set>
 #include <unordered_map>
 
+
 namespace ga
 {
+    typedef std::uniform_int_distribution<int> UniformIntDistribution;
+    typedef Randomizer<UniformIntDistribution, int> RandomizerInt;
+
+    template <class _DistributionType, class _DataType>
+    class Randomizer
+    {
+    public:
+        std::random_device rd;
+        std::default_random_engine generator;
+        _DistributionType distribution;
+
+        Randomizer(_DataType minValue, _DataType maxValue)
+        {
+            this->generator = std::default_random_engine(this->rd());
+            this->distribution = _DistributionType(minValue, maxValue);
+        }
+
+        _DataType run(){
+            return this->distribution(this->generator);
+        }
+    };
+
     template <class _Container>
     int pick_random_element(_Container &v)
     {
