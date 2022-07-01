@@ -167,6 +167,11 @@ namespace ga
             this->chromossome.genes = genes;
             this->generate_breakpoints(qtyBreaks, randomizer);
         }
+
+        Individual(std::vector<int> genes){
+            this->fitness = 0;
+            this->chromossome.genes = genes;
+        }
     };
 
     class Population
