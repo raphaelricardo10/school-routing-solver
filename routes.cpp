@@ -153,17 +153,19 @@ namespace ga
 
             std::unordered_set<int> crossoverMap(crossoverInterval.begin(), crossoverInterval.end());
 
-            int rotationOffset = p1Interval.size() / 2;
+            int rotationOffset = crossoverInterval.size() / 2;
             rotate_deq(p2Part, rotationOffset);
 
             std::deque<int> offspring(this->parent2->chromossome.genes.begin(), this->parent2->chromossome.genes.begin() + bpIndex);
 
-            p2Part.insert(p2Part.begin() + crossoverInterval.startIndex, crossoverInterval.begin(), crossoverInterval.end());
+            int insertionPoint = std::min((int) p2Part.size() - 1, crossoverInterval.startIndex);
+
+            p2Part.insert(p2Part.begin() + insertionPoint, crossoverInterval.begin(), crossoverInterval.end());
             offspring.erase(offspring.begin() + p2Interval.startIndex, offspring.begin() + p2Interval.endIndex + 1);
             offspring.insert(offspring.begin() + p2Interval.startIndex, p2Part.begin(), p2Part.end());
 
             int i = -1;
-            auto it = std::remove_if(offspring.begin(), offspring.end(), [&crossoverMap, &p2Interval, &crossoverInterval, &i, this](int elem)
+            auto it = std::remove_if(offspring.begin(), offspring.end(), [&crossoverMap, &p2Interval, &crossoverInterval, &i, insertionPoint, this](int elem)
                                      {
                 i++;
 
@@ -171,7 +173,7 @@ namespace ga
                     return false;
                 }
 
-                if(!this->isInRange(p2Interval.startIndex, crossoverInterval.startIndex, crossoverInterval.endIndex, i)){
+                if(!this->isInRange(p2Interval.startIndex, insertionPoint, insertionPoint + crossoverInterval.size() - 1, i)){
                     return true;
                 }
 
@@ -179,10 +181,6 @@ namespace ga
 
             offspring.erase(it, offspring.end());
             offspring.insert(offspring.end(), this->parent2->chromossome.genes.begin() + bpIndex, this->parent2->chromossome.genes.end());
-
-            if(offspring.size() != this->parent1->chromossome.genes.size()){
-                int j = 0;
-            }
 
             this->numberOfTrials++;
             this->offspring = Individual(std::vector<int>(offspring.begin(), offspring.end()));
@@ -252,17 +250,18 @@ namespace ga
 
         void run()
         {
+            this->population.map([this] (Individual *individual){
+                this->calculate_fitness(individual);
+
+                if (this->should_update_best(individual->fitness))
+                {
+                    this->population.best = individual;
+                }
+
+            });
+
             for(this->population.generation; this->population.generation < this->maxGenerations; this->population.generation++)
             {
-                this->population.map([this] (Individual *individual){
-                    this->calculate_fitness(individual);
-
-                    if (this->should_update_best(individual->fitness))
-                    {
-                        this->population.best = individual;
-                    }
-
-                });
 
                 int p1, p2;
                 Crossover crossover1;
