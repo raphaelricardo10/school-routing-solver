@@ -80,18 +80,10 @@ namespace ga
         }
     };
 
-    class RoutingGA : public GeneticBase
-    {
+    class Crossover{
     private:
-        bool should_update_best(int fitness)
-        {
-            if (!this->population.best)
-            {
-                return true;
-            }
-
-            return fitness < this->population.best->fitness;
-        }
+        bool initialized;
+        int numberOfTrials;
 
         template <class _ContainerType, class _ElementType>
         bool isInContainer(_ContainerType container, _ElementType elem)
@@ -104,13 +96,58 @@ namespace ga
             return value >= base + start && value <= base + end;
         }
 
-        Individual make_offspring(Individual &p1, Individual &p2)
-        {
-            Interval p1Interval(p1.chromossome.genes, this->numberOfLocations, this->randomizer);
-            Interval p2Interval(p2.chromossome.genes, this->numberOfLocations, this->randomizer);
+    public:
+        int maxOfTrials;
+        Individual *parent1;
+        Individual *parent2;
+        Individual offspring;
+
+        Crossover(){
+            this->maxOfTrials = 0;
+            this->parent1 = 0;
+            this->parent2 = 0;
+            this->numberOfTrials = 0;
+            this->initialized = false;
+        }
+
+        Crossover(Individual &parent1, Individual &parent2, int maxOfTrials){
+            this->parent1 = &parent1;
+            this->parent2 = &parent2;
+            this->maxOfTrials = maxOfTrials;
+            this->initialized = true;
+            this->numberOfTrials = 0;
+        }
+
+        bool is_acceptable(){
+            if(!this->initialized){
+                return false;
+            }
+
+            if(this->offspring.fitness == 0){
+                return false;
+            }
+
+            if(this->numberOfTrials > this->maxOfTrials){
+                return false;
+            }
+
+            if(this->offspring.fitness > this->parent1->fitness){
+                return false;
+            }
+
+            if(this->offspring.fitness > this->parent2->fitness){
+                return false;
+            }
+
+            return true;
+        }
+
+        void make_offspring(int bpIndex, RandomizerInt &randomizer){
+            Interval p1Interval(this->parent1->chromossome.genes, bpIndex, randomizer);
+            Interval p2Interval(this->parent2->chromossome.genes, bpIndex, randomizer);
 
             std::vector<int> p1Part;
-            Interval crossoverInterval(p1Interval, p1Part, this->randomizer);
+            Interval crossoverInterval(p1Interval, p1Part, randomizer);
 
             std::deque<int> p2Part(p2Interval.begin(), p2Interval.end());
 
@@ -119,7 +156,7 @@ namespace ga
             int rotationOffset = p1Interval.size() / 2;
             rotate_deq(p2Part, rotationOffset);
 
-            std::deque<int> offspring(p2.chromossome.genes.begin(), p2.chromossome.genes.begin() + this->numberOfLocations);
+            std::deque<int> offspring(this->parent2->chromossome.genes.begin(), this->parent2->chromossome.genes.begin() + bpIndex);
 
             p2Part.insert(p2Part.begin() + crossoverInterval.startIndex, crossoverInterval.begin(), crossoverInterval.end());
             offspring.erase(offspring.begin() + p2Interval.startIndex, offspring.begin() + p2Interval.endIndex + 1);
@@ -141,9 +178,28 @@ namespace ga
                 return false; });
 
             offspring.erase(it, offspring.end());
-            offspring.insert(offspring.end(), p2.chromossome.genes.begin() + numberOfLocations, p2.chromossome.genes.end());
+            offspring.insert(offspring.end(), this->parent2->chromossome.genes.begin() + bpIndex, this->parent2->chromossome.genes.end());
 
-            return Individual(std::vector<int>(offspring.begin(), offspring.end()));
+            if(offspring.size() != this->parent1->chromossome.genes.size()){
+                int j = 0;
+            }
+
+            this->numberOfTrials++;
+            this->offspring = Individual(std::vector<int>(offspring.begin(), offspring.end()));
+        }
+    };
+
+    class RoutingGA : public GeneticBase
+    {
+    private:
+        bool should_update_best(int fitness)
+        {
+            if (!this->population.best)
+            {
+                return true;
+            }
+
+            return fitness < this->population.best->fitness;
         }
 
     public:
@@ -194,27 +250,6 @@ namespace ga
             individual->fitness = totalDistance;
         }
 
-        std::tuple<Individual, Individual> make_crossover(Individual &p1, Individual &p2)
-        {
-            Individual offspring1, offspring2;
-
-            do
-            {
-                offspring1 = make_offspring(p1, p2);
-                this->calculate_fitness(&offspring1);
-
-            } while (offspring1.fitness > this->population.best->fitness);
-
-            do
-            {
-                offspring2 = make_offspring(p2, p1);
-                this->calculate_fitness(&offspring2);
-
-            } while (offspring2.fitness > this->population.best->fitness);
-
-            return std::make_tuple(offspring1, offspring2);
-        }
-
         void run()
         {
             for(this->population.generation; this->population.generation < this->maxGenerations; this->population.generation++)
@@ -230,13 +265,29 @@ namespace ga
                 });
 
                 int p1, p2;
-                Individual offspring1, offspring2;
+                Crossover crossover1;
+                Crossover crossover2;
 
-                std::tie(p1, p2) = this->make_selection();
-                std::tie(offspring1, offspring2) = this->make_crossover(this->population.individuals[p1], this->population.individuals[p2]);
+                while(!crossover1.is_acceptable() && !crossover2.is_acceptable()){
+                    std::tie(p1, p2) = this->make_selection();
 
-                this->population.individuals[p1] = offspring1;
-                this->population.individuals[p2] = offspring2;
+                    crossover1 = Crossover(this->population.individuals[p1], this->population.individuals[p2], 5);
+                    crossover2 = Crossover(this->population.individuals[p2], this->population.individuals[p1], 5);
+
+                    for(int i = 0; i < 5; i++){
+                        if(!crossover1.is_acceptable()){
+                            crossover1.make_offspring(this->numberOfLocations, this->randomizer);
+                            this->calculate_fitness(&crossover1.offspring);
+                        }
+                        if(!crossover2.is_acceptable()){
+                            crossover2.make_offspring(this->numberOfLocations, this->randomizer);
+                            this->calculate_fitness(&crossover2.offspring);
+                        }
+                    }
+                }
+
+                this->population.individuals[p1] = crossover1.offspring;
+                this->population.individuals[p2] = crossover2.offspring;
             }
         }
     };
