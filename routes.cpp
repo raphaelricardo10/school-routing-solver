@@ -200,6 +200,13 @@ namespace ga
             return fitness < this->population.best->fitness;
         }
 
+        int get_distance(int location1, int location2){
+            int i = std::max(location1, location2);
+            int j = std::min(location1, location2);
+
+            return this->distances[i][j];
+        }
+
     public:
         int numberOfRoutes;
         int numberOfLocations;
@@ -218,8 +225,8 @@ namespace ga
 
         void generate_distances(int individualSize)
         {
-            RandomizerInt randomizer(1, 100);
-            for (int i = 0; i < individualSize; i++)
+            RandomizerInt randomizer(9000, 10000);
+            for (int i = 0; i <= individualSize; i++)
             {
                 std::vector<int> v;
                 for (int j = 0; j < i; j++)
@@ -234,15 +241,18 @@ namespace ga
         {
             int totalDistance = 0;
 
-            for (int i = 1; i < this->numberOfRoutes; i++)
+            for (int i = this->numberOfLocations - 1; i < individual->chromossome.genes.size(); i++)
             {
-                int nextRoute = individual->chromossome.genes[i];
-                int prevRoute = individual->chromossome.genes[i - 1];
+                int firstLocationOfRoute = i == this->numberOfLocations - 1 ? 0 : individual->chromossome.genes[i];
+                int LastLocationOfRoute = i + 1 >= individual->chromossome.genes.size() ? this->numberOfLocations : individual->chromossome.genes[i + 1];
 
-                int x = std::max(nextRoute, prevRoute) - 1;
-                int y = std::min(nextRoute, prevRoute) - 1;
-
-                totalDistance += this->distances[x][y];
+                for(int j = firstLocationOfRoute; j < LastLocationOfRoute; j++){
+                    int currLocation = individual->chromossome.genes[j];
+                    int prevLocation = j == firstLocationOfRoute ? 0 : individual->chromossome.genes[j - 1];
+                    
+                    totalDistance += this->get_distance(currLocation, prevLocation);
+                }
+                
             }
 
             individual->fitness = totalDistance;
