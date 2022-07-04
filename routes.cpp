@@ -80,7 +80,8 @@ namespace ga
         }
     };
 
-    class Crossover{
+    class Crossover
+    {
     private:
         bool initialized;
         int numberOfTrials;
@@ -102,7 +103,8 @@ namespace ga
         Individual *parent2;
         Individual offspring;
 
-        Crossover(){
+        Crossover()
+        {
             this->maxOfTrials = 0;
             this->parent1 = 0;
             this->parent2 = 0;
@@ -110,7 +112,8 @@ namespace ga
             this->initialized = false;
         }
 
-        Crossover(Individual &parent1, Individual &parent2, int maxOfTrials){
+        Crossover(Individual &parent1, Individual &parent2, int maxOfTrials)
+        {
             this->parent1 = &parent1;
             this->parent2 = &parent2;
             this->maxOfTrials = maxOfTrials;
@@ -118,31 +121,38 @@ namespace ga
             this->numberOfTrials = 0;
         }
 
-        bool is_acceptable(){
-            if(!this->initialized){
+        bool is_acceptable()
+        {
+            if (!this->initialized)
+            {
                 return false;
             }
 
-            if(this->offspring.fitness == 0){
+            if (this->offspring.fitness == 0)
+            {
                 return false;
             }
 
-            if(this->numberOfTrials > this->maxOfTrials){
+            if (this->numberOfTrials > this->maxOfTrials)
+            {
                 return false;
             }
 
-            if(this->offspring.fitness > this->parent1->fitness){
+            if (this->offspring.fitness > this->parent1->fitness)
+            {
                 return false;
             }
 
-            if(this->offspring.fitness > this->parent2->fitness){
+            if (this->offspring.fitness > this->parent2->fitness)
+            {
                 return false;
             }
 
             return true;
         }
 
-        void make_offspring(int bpIndex, RandomizerInt &randomizer){
+        void make_offspring(int bpIndex, RandomizerInt &randomizer)
+        {
             Interval p1Interval(this->parent1->chromossome.genes, bpIndex, randomizer);
             Interval p2Interval(this->parent2->chromossome.genes, bpIndex, randomizer);
 
@@ -158,7 +168,7 @@ namespace ga
 
             std::deque<int> offspring(this->parent2->chromossome.genes.begin(), this->parent2->chromossome.genes.begin() + bpIndex);
 
-            int insertionPoint = std::min((int) p2Part.size() - 1, crossoverInterval.startIndex);
+            int insertionPoint = std::min((int)p2Part.size() - 1, crossoverInterval.startIndex);
 
             p2Part.insert(p2Part.begin() + insertionPoint, crossoverInterval.begin(), crossoverInterval.end());
             offspring.erase(offspring.begin() + p2Interval.startIndex, offspring.begin() + p2Interval.endIndex + 1);
@@ -200,7 +210,8 @@ namespace ga
             return fitness < this->population.best->fitness;
         }
 
-        int get_distance(int location1, int location2){
+        int get_distance(int location1, int location2)
+        {
             int i = std::max(location1, location2);
             int j = std::min(location1, location2);
 
@@ -220,7 +231,7 @@ namespace ga
             this->mutationRate = mutationRate;
             this->numberOfLocations = numLocations;
             this->population = Population(populationSize, numLocations, numRoutes);
-            this->generate_distances(numLocations);
+            this->generate_google_distances();
         }
 
         void generate_distances(int individualSize)
@@ -246,13 +257,13 @@ namespace ga
                 int firstLocationOfRoute = i == this->numberOfLocations - 1 ? 0 : individual->chromossome.genes[i];
                 int LastLocationOfRoute = i + 1 >= individual->chromossome.genes.size() ? this->numberOfLocations : individual->chromossome.genes[i + 1];
 
-                for(int j = firstLocationOfRoute; j < LastLocationOfRoute; j++){
+                for (int j = firstLocationOfRoute; j < LastLocationOfRoute; j++)
+                {
                     int currLocation = individual->chromossome.genes[j];
                     int prevLocation = j == firstLocationOfRoute ? 0 : individual->chromossome.genes[j - 1];
-                    
+
                     totalDistance += this->get_distance(currLocation, prevLocation);
                 }
-                
             }
 
             individual->fitness = totalDistance;
@@ -260,35 +271,38 @@ namespace ga
 
         void run()
         {
-            this->population.map([this] (Individual *individual){
-                this->calculate_fitness(individual);
+            this->population.map([this](Individual *individual)
+                                 {
+                                     this->calculate_fitness(individual);
 
-                if (this->should_update_best(individual->fitness))
-                {
-                    this->population.best = individual;
-                }
+                                     if (this->should_update_best(individual->fitness))
+                                     {
+                                         this->population.best = individual;
+                                     } });
 
-            });
-
-            for(this->population.generation; this->population.generation < this->maxGenerations; this->population.generation++)
+            for (this->population.generation; this->population.generation < this->maxGenerations; this->population.generation++)
             {
 
                 int p1, p2;
                 Crossover crossover1;
                 Crossover crossover2;
 
-                while(!crossover1.is_acceptable() && !crossover2.is_acceptable()){
+                while (!crossover1.is_acceptable() && !crossover2.is_acceptable())
+                {
                     std::tie(p1, p2) = this->make_selection();
 
                     crossover1 = Crossover(this->population.individuals[p1], this->population.individuals[p2], 5);
                     crossover2 = Crossover(this->population.individuals[p2], this->population.individuals[p1], 5);
 
-                    for(int i = 0; i < 5; i++){
-                        if(!crossover1.is_acceptable()){
+                    for (int i = 0; i < 5; i++)
+                    {
+                        if (!crossover1.is_acceptable())
+                        {
                             crossover1.make_offspring(this->numberOfLocations, this->randomizer);
                             this->calculate_fitness(&crossover1.offspring);
                         }
-                        if(!crossover2.is_acceptable()){
+                        if (!crossover2.is_acceptable())
+                        {
                             crossover2.make_offspring(this->numberOfLocations, this->randomizer);
                             this->calculate_fitness(&crossover2.offspring);
                         }
