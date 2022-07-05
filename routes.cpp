@@ -218,6 +218,21 @@ namespace ga
             return this->distances[i][j];
         }
 
+        std::vector<std::vector<int>> vector_from_pointer(int *ptr, int width, int height)
+        {
+            std::vector<std::vector<int>> v(height, std::vector<int>(width));
+
+            for(int i = 0; i < height; i++)
+            {
+                for(int j = 0; j < width; j++)
+                {
+                    v[i][j] = ptr[width * i + j];
+                }
+            }
+
+            return v;
+        }
+
     public:
         int numberOfRoutes;
         int numberOfLocations;
@@ -232,6 +247,17 @@ namespace ga
             this->numberOfLocations = numLocations;
             this->population = Population(populationSize, numLocations, numRoutes);
             this->generate_google_distances();
+        }
+
+        RoutingGA(int maxGenerations, int populationSize, int numLocations, int numRoutes, int selectionK, float mutationRate, int *v_ptr)
+        {
+            this->maxGenerations = maxGenerations;
+            this->numberOfRoutes = numRoutes;
+            this->selectionK = selectionK;
+            this->mutationRate = mutationRate;
+            this->numberOfLocations = numLocations;
+            this->population = Population(populationSize, numLocations, numRoutes);
+            this->distances = this->vector_from_pointer(v_ptr, numLocations + 1, numLocations + 1);
         }
 
         void generate_distances(int individualSize)
