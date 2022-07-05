@@ -14,15 +14,17 @@ void print_individual(ga::Individual *individual)
 
 int main()
 {
-    int popSize = 5;
-    int qtyLocations = 100;
+    int popSize = 200;
+    int qtyLocations = 15;
     int qtyRoutes = 3;
     int maxGenerations = 100;
     int selectionK = 3;
     float mutationRate = 0.65;
 
     ga::RoutingGA ga(maxGenerations, popSize, qtyLocations, qtyRoutes, selectionK, mutationRate);
+
     ga.run();
 
     return 0;
 }
+
