@@ -7,7 +7,7 @@ from routingGA import RoutingGA
 
 class GALib:
     def __init__(self, routingGA: RoutingGA, libPath: str) -> GALib:
-        self.lib = ctypes.cdll.LoadLibrary('/home/raphael/projects/uff/intcomp/gen-alg-vrp/ga.so')
+        self.lib = ctypes.cdll.LoadLibrary(libPath)
         self.routingGA = routingGA
 
         numRows, numCols = routingGA.distances.shape
