@@ -31,6 +31,17 @@ class MapsAPI:
             distances.append([x['distance']['value'] for x in row['elements']])
         return distances
 
+    def directions(self, destination, source):
+        return self.client.directions(
+            destination,
+            source,
+            mode="driving",
+            avoid=["highways", "tolls", "ferries"],
+            units="metric",
+            language="pt-BR",
+            region="BR",
+        )
+
 
 if __name__ == '__main__':
     addresses = ['Externato+Bastos+Silva+RJ',  # depot
@@ -42,8 +53,7 @@ if __name__ == '__main__':
     mapsAPI = MapsAPI(os.getenv('API_KEY'))
 
     distances = mapsAPI.distance_matrix(addresses)
-
-    print(distances)
+    routes = mapsAPI.directions(addresses[0], addresses[1])
 
     routingGA = RoutingGA(popSize=200, qtyLocations=15, qtyRoutes=5,
                         maxGenerations=100, selectionK=3, mutationRate=0.65, distances=distances)
