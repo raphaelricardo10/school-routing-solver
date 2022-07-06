@@ -274,6 +274,6 @@ namespace ga
             int p2 = this->select_parent(parents, p1);
 
             return std::make_tuple(p1, p2);
-        };
+        }
     };
 }
