@@ -5,6 +5,7 @@ from routingGA import RoutingGA
 from GALib import GALib
 from dotenv import load_dotenv
 from datetime import datetime as dt
+from data import addresses
 
 load_dotenv()
 
@@ -76,39 +77,6 @@ class MapsAPI:
 
 
 if __name__ == '__main__':
-    addresses = ['Externato+Bastos+Silva+RJ',  # depot
-                 'Rua Mutuapira, 191, RJ',
-                 'Rua Jaime Bittencourt, 336, RJ'
-                 'Rua Espedicionário Evilásio Rocha Assis, 85, RJ',
-                 'R. João Antônio Leandro, 3473, RJ',
-                 'R. Expedicionario Manuel E De Sousa, 414 - Fazenda dos Mineiros, São Gonçalo,',
-                 'R. Heitor Rodrigues, 91 - Itaúna',
-                 'R. Laura Amélia de Souza, 239, Sao Goncalo',
-                 'R. Liborina Silva, 372 - Itaúna',
-                 'Estr. da Sapucaia, 694, Sao Goncalo',
-                 'R. Santo André, 92-242 - Itaúna',
-                 'R. Lopes de Moura, 38 - Nova Cidade',
-                 'R. Ives Ribeiro, 110 - Nova Cidade',
-                 'R. Petrópolis, 700 - Trindade',
-                 'R. Petrópolis, 1189 - Trindade',
-                 'Av. José Manna Júnior, 606, Sao Goncalo',
-                 'R. Ilhéus, 147 - Trindade',
-                 'R. Cuiabá, 661 - Trindade',
-                 'R. Itaperuna, 358 - Trindade',
-                 'R. Londrina, 104 - Trindade',
-                 'Avenida Trindade, 536 - Trindade',
-                 'R. Recife, 1609 - Trindade',
-                 'R. Uberlândia, 459 - Trindade',
-                 'R. Albino de Almeida, 85 - Trindade',
-                 'R. Barbacena, 17 - Trindade',
-                 'R. Rio de Janeiro, 751-639 - Trindade',
-                 'R. Itaocara, 82 - Trindade',
-                 'R. Guadalajara, 148-230 - Trindade',
-                 'R. Peleuzio Araújo, 59 - Mutua',
-                 'R. Manuel Pinheiro, 148 - São Miguel',
-                 'R. Peleuzio Araújo, 88 - Mutua',
-                 ]
-
     mapsAPI = MapsAPI(os.getenv('API_KEY'))
 
     address_chunks = [addresses[x:x+10] for x in range(0, len(addresses), 10)]
