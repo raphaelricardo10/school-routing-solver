@@ -105,20 +105,24 @@ if __name__ == '__main__':
                     'R. Peleuzio Araújo, 59 - Mutua',
                     'R. Manuel Pinheiro, 148 - São Miguel',
                     'R. Peleuzio Araújo, 88 - Mutua',
-                    'R. Cel. Álvaro de Andrade, 25 - São Miguel',
-                    'R. Tales de Andrade, 448-378 - Antonina',
                 ]
 
     mapsAPI = MapsAPI(os.getenv('API_KEY'))
 
-    distances = mapsAPI.distance_matrix(addresses)
-    routes = mapsAPI.directions(addresses[0], addresses[-1], addresses[1:-1])
+
+    address_chunks = [addresses[x:x+10] for x in range(0, len(addresses), 10)]
+    distances = []
+    routes = []
+
+    for address_chunk in address_chunks:
+        distances += mapsAPI.distance_matrix(address_chunk)
+        routes += mapsAPI.directions(address_chunk[0], address_chunk[-1], address_chunk[1:-1])
 
     with open('driving_route_map.jpg', 'wb') as img:
         for chunk in mapsAPI.plot_directions(routes):
             img.write(chunk)
 
-    routingGA = RoutingGA(popSize=50, qtyLocations=len(addresses) - 1, qtyRoutes=5,
+    routingGA = RoutingGA(popSize=50, qtyLocations=len(distances) - 1, qtyRoutes=5,
                         maxGenerations=100, selectionK=3, mutationRate=0.05, distances=distances)
     lib = GALib(routingGA=routingGA,
                 libPath=os.getenv('LIB_PATH'))
