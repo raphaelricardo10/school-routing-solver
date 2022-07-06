@@ -19,7 +19,7 @@ int main()
     int qtyRoutes = 1;
     int maxGenerations = 100;
     int selectionK = 3;
-    float mutationRate = 0.65;
+    float mutationRate = 0.05;
 
     ga::RoutingGA ga(maxGenerations, popSize, qtyLocations, qtyRoutes, selectionK, mutationRate);
 
