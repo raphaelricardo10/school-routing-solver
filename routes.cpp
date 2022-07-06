@@ -336,6 +336,26 @@ namespace ga
             individual->fitness = totalDistance;
         }
 
+        void make_mutation()
+        {
+            Randomizer<std::uniform_real_distribution<float>, float> random_float(0, 1);
+
+            this->population.map([this, &random_float] (Individual *individual){
+                random_float.get_number();
+
+                if(random_float.get_number() < this->mutationRate){
+                    this->randomizer.set_range(0, this->numberOfLocations - 1);
+                    int index1 = this->randomizer.get_number();
+                    int index2 = this->randomizer.get_number(index1);
+
+                    int aux = individual->chromossome.genes[index1];
+
+                    individual->chromossome.genes[index1] = individual->chromossome.genes[index2];
+                    individual->chromossome.genes[index2] = aux;
+                }
+            });
+        }
+
         void run()
         {
             this->population.map([this](Individual *individual)
@@ -378,6 +398,8 @@ namespace ga
 
                 this->population.individuals[p1] = crossover1.offspring;
                 this->population.individuals[p2] = crossover2.offspring;
+
+                this->make_mutation();
             }
         }
     };
