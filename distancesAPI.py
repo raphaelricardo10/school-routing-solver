@@ -20,7 +20,7 @@ class MapsAPI:
                     mode="driving",
                     language="pt-BR",
                     avoid="tolls",
-                    units="imperial",
+                    units="metric",
                     departure_time=dt.now(),
                     traffic_model="optimistic",
         )
