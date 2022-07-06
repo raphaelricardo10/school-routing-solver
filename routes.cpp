@@ -2,6 +2,7 @@
 #include <tuple>
 #include <deque>
 #include <unordered_set>
+#include <iostream>
 #include "genetic.cpp"
 
 namespace ga
@@ -380,4 +381,14 @@ namespace ga
             }
         }
     };
+    
+    extern "C"
+    void ga_interface(int popSize, int qtyLocations, int qtyRoutes, int maxGenerations, int selectionK, float mutationRate, int *v)
+    {
+        ga::RoutingGA ga(maxGenerations, popSize, qtyLocations, qtyRoutes, selectionK, mutationRate, v);
+
+        ga.run();
+
+        std::cout << ga.population.best->fitness;
+    }
 }
