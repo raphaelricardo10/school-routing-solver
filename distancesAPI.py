@@ -1,11 +1,8 @@
 import googlemaps
-import os
 import itertools
 import pickle
 import numpy as np
 
-from routingGA import RoutingGA
-from GALib import GALib
 from datetime import datetime as dt
 from data import addresses
 
@@ -163,18 +160,3 @@ class MapsAPI:
             count += 1
 
         return chunks
-
-
-if __name__ == '__main__':
-    mapsAPI = MapsAPI(os.getenv('API_KEY'))
-
-    address_chunks = MapsAPI.split_in_chunks(addresses, 25)
-    distances = MapsAPI.split_distance_request(address_chunks) if os.getenv('GET_DISTANCES', False) else MapsAPI.get_from_cache()
-    distances = MapsAPI.convert_to_symmetric(distances)
-
-    routingGA = RoutingGA(popSize=50, qtyLocations=len(distances) - 1, qtyRoutes=5,
-                          maxGenerations=100, selectionK=3, mutationRate=0.05, distances=distances)
-    lib = GALib(routingGA=routingGA,
-                libPath=os.getenv('LIB_PATH'))
-
-    lib.run()
