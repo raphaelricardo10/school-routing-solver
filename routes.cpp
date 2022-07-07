@@ -411,6 +411,6 @@ namespace ga
 
         ga.run();
 
-        std::cout << ga.population.best->fitness;
+        std::cout << ga.population.best->fitness << '\n';
     }
 }
