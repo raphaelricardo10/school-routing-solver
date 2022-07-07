@@ -36,11 +36,11 @@ class MapsAPI:
 
         return distances
 
-    def split_distance_request(chunks: list, shouldCache = True):
+    def split_distance_request(self, chunks: list, shouldCache = True):
         distances = {}
-        for address_chunk in address_chunks:
+        for address_chunk in chunks:
             for source, destinations in address_chunk.items():
-                result = mapsAPI.distance_matrix(source, destinations)
+                result = self.distance_matrix(source, destinations)
 
                 if source not in distances:
                     distances[source] = []
@@ -62,7 +62,7 @@ class MapsAPI:
         for chunk in chunks.values():
             fullChunk = []
             for chunkPart in chunk:
-                fullChunk += chunkPart[0]
+                fullChunk += chunkPart
             
             fullChunk.insert(0, 0)
             distances.append(fullChunk)
