@@ -23,7 +23,7 @@ addresses = ['Externato+Bastos+Silva+RJ',  # depot
              'R. Uberlândia, 459 - Trindade',
              'R. Albino de Almeida, 85 - Trindade',
              'R. Barbacena, 17 - Trindade',
-             'R. Rio de Janeiro, 751-639 - Trindade',
+             'R. Rio de Janeiro, 751 - Trindade',
              'R. Itaocara, 82 - Trindade',
              'R. Guadalajara, 148-230 - Trindade',
              'R. Peleuzio Araújo, 59 - Mutua',
