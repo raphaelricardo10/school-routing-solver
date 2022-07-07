@@ -1,9 +1,9 @@
 addresses = ['Externato+Bastos+Silva+RJ',  # depot
              'Rua Mutuapira, 191, RJ',
-             'Rua Jaime Bittencourt, 336, RJ'
+             'Rua Jaime Bittencourt, 336, RJ',
              'Rua Espedicionário Evilásio Rocha Assis, 85, RJ',
              'R. João Antônio Leandro, 3473, RJ',
-             'R. Expedicionario Manuel E De Sousa, 414 - Fazenda dos Mineiros, São Gonçalo,',
+             'R. Expedicionario Manuel E De Sousa, 414 - Fazenda dos Mineiros, São Gonçalo',
              'R. Heitor Rodrigues, 91 - Itaúna',
              'R. Laura Amélia de Souza, 239, Sao Goncalo',
              'R. Liborina Silva, 372 - Itaúna',
