@@ -1,5 +1,8 @@
 import googlemaps
 import os
+import itertools
+import pickle
+import numpy as np
 
 from routingGA import RoutingGA
 from GALib import GALib
@@ -9,16 +12,21 @@ from data import addresses
 
 load_dotenv()
 
+class Destination:
+    def __init__(self, address: str, distance: int) -> None:
+        self.address = address
+        self.distance = distance
+
 
 class MapsAPI:
     def __init__(self, key: str) -> None:
         self.key = key
         self.client = googlemaps.Client(key)
 
-    def distance_matrix(self, addresses):
+    def distance_matrix(self, source, destination):
         response = self.client.distance_matrix(
-            addresses,
-            addresses,
+            source,
+            destination,
             mode="driving",
             language="pt-BR",
             avoid="tolls",
@@ -31,6 +39,7 @@ class MapsAPI:
 
         for row in response['rows']:
             distances.append([x['distance']['value'] for x in row['elements']])
+
         return distances
 
     def directions(self, destination, source, waypoints: 'list[str]'):
@@ -75,22 +84,73 @@ class MapsAPI:
 
         return result_map
 
+    def split_in_chunks(data: list, chunkSize):
+        combinations = [x for x in itertools.combinations(addresses, 2)]
+        count = 0
+        chunks = []
+        chunk = {}
+        chunks.append(chunk)
+
+        for element in combinations:
+            if count >= chunkSize:
+                chunk = {}
+                chunks.append(chunk)
+                count = 0
+
+            if(element[0]) not in chunk:
+                chunk[element[0]] = []
+                count += 1
+
+            chunk[element[0]].append(element[1])
+            count += 1
+
+        return chunks
+
 
 if __name__ == '__main__':
     mapsAPI = MapsAPI(os.getenv('API_KEY'))
 
-    address_chunks = [addresses[x:x+10] for x in range(0, len(addresses), 10)]
-    distances = []
+    address_chunks = MapsAPI.split_in_chunks(addresses, 25)
+    distances = {}
     routes = []
 
-    for address_chunk in address_chunks:
-        distances += mapsAPI.distance_matrix(address_chunk)
-        routes += mapsAPI.directions(address_chunk[0],
-                                     address_chunk[-1], address_chunk[1:-1])
+    # for address_chunk in address_chunks:
+    #     locations = {}
+    #     for source, destinations in address_chunk.items():
+    #         result = mapsAPI.distance_matrix(source, destinations)
 
-    with open('driving_route_map.jpg', 'wb') as img:
-        for chunk in mapsAPI.plot_directions(routes):
-            img.write(chunk)
+    #         if source not in distances:
+    #             distances[source] = []
+
+    #         distances[source] += result
+            
+    # with open('distances_response.txt', 'wb') as file:
+    #     pickle.dump(distances, file)
+
+    with open('distanceData.txt', 'rb') as f:
+        distances = pickle.load(f)
+
+    distance_matrix = []
+    for chunk in distances.values():
+        fullChunk = []
+        for chunkPart in chunk:
+            fullChunk += chunkPart[0]
+        distance_matrix.append(fullChunk)
+
+    flattened_distances = []
+    for x in distance_matrix:
+        flattened_distances += x
+
+    n = len(distance_matrix)
+    a = np.zeros((n,n)) # Initialize nxn matrix
+    triu = np.triu_indices(n) # Find upper right indices of a triangular nxn matrix
+    tril = np.tril_indices(n, -1) # Find lower left indices of a triangular nxn matrix
+    a[triu] = flattened_distances # Assign list values to upper right matrix
+    a[tril] = a.T[tril] # Make the matrix symmetric
+
+    # with open('driving_route_map.jpg', 'wb') as img:
+    #     for chunk in mapsAPI.plot_directions(routes):
+    #         img.write(chunk)
 
     routingGA = RoutingGA(popSize=50, qtyLocations=len(distances) - 1, qtyRoutes=5,
                           maxGenerations=100, selectionK=3, mutationRate=0.05, distances=distances)
