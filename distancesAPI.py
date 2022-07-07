@@ -135,7 +135,11 @@ if __name__ == '__main__':
         fullChunk = []
         for chunkPart in chunk:
             fullChunk += chunkPart[0]
+        
+        fullChunk.insert(0, 0)
         distance_matrix.append(fullChunk)
+
+    distance_matrix.append([0])
 
     flattened_distances = []
     for x in distance_matrix:
