@@ -6,11 +6,8 @@ import numpy as np
 
 from routingGA import RoutingGA
 from GALib import GALib
-from dotenv import load_dotenv
 from datetime import datetime as dt
 from data import addresses
-
-load_dotenv()
 
 class Destination:
     def __init__(self, address: str, distance: int) -> None:
@@ -90,7 +87,7 @@ class MapsAPI:
 
         flattened = MapsAPI.flatten_distance_matrix(distances)
 
-        sym_distances = np.zeros((n,n)) # Initialize nxn matrix
+        sym_distances = np.zeros((n,n), dtype=np.int32) # Initialize nxn matrix
         triu = np.triu_indices(n) # Find upper right indices of a triangular nxn matrix
         tril = np.tril_indices(n, -1) # Find lower left indices of a triangular nxn matrix
         sym_distances[triu] = flattened # Assign list values to upper right matrix
