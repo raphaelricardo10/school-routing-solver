@@ -11,7 +11,7 @@ class GALib:
         self.routingGA = routingGA
 
         numRows, numCols = routingGA.distances.shape
-        self.lib.ga_interface.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_float, np.ctypeslib.ndpointer(dtype=np.int32, ndim=2, shape=(numRows, numCols))]
+        self.lib.ga_interface.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_float, ctypes.c_float,np.ctypeslib.ndpointer(dtype=np.int32, ndim=2, shape=(numRows, numCols))]
 
     def run(self):
         self.lib.ga_interface(
@@ -21,5 +21,6 @@ class GALib:
             self.routingGA.maxGenerations,
             self.routingGA.selectionK,
             self.routingGA.mutationRate,
+            self.routingGA.optRate,
             self.routingGA.distances
         )
