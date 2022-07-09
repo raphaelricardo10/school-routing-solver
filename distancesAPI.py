@@ -92,9 +92,9 @@ class MapsAPI:
 
         return sym_distances
 
-    def save_to_image(routes):
+    def save_to_image(self, routes):
         with open('driving_route_map.jpg', 'wb') as img:
-            for chunk in mapsAPI.plot_directions(routes):
+            for chunk in self.plot_directions(routes):
                 img.write(chunk)
 
     def directions(self, destination, source, waypoints: 'list[str]'):

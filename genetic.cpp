@@ -108,6 +108,7 @@ namespace ga
     class Permutator
     {
     private:
+        std::default_random_engine rng;
         std::vector<int> generate_vector(int n)
         {
             std::vector<int> v(n);
@@ -131,7 +132,7 @@ namespace ga
 
         void shuffle()
         {
-            std::random_shuffle(this->vector.begin(), this->vector.end());
+            std::shuffle(this->vector.begin(), this->vector.end(), this->rng);
         }
     };
 

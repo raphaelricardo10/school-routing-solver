@@ -237,9 +237,10 @@ namespace ga
     public:
         int numberOfRoutes;
         int numberOfLocations;
+        float optRate;
         std::vector<std::vector<int>> distances;
 
-        RoutingGA(int maxGenerations, int populationSize, int numLocations, int numRoutes, int selectionK, float mutationRate)
+        RoutingGA(int maxGenerations, int populationSize, int numLocations, int numRoutes, int selectionK, float mutationRate, float optRate)
         {
             this->maxGenerations = maxGenerations;
             this->numberOfRoutes = numRoutes;
@@ -250,12 +251,13 @@ namespace ga
             this->generate_google_distances();
         }
 
-        RoutingGA(int maxGenerations, int populationSize, int numLocations, int numRoutes, int selectionK, float mutationRate, int *v_ptr)
+        RoutingGA(int maxGenerations, int populationSize, int numLocations, int numRoutes, int selectionK, float mutationRate, float optRate,int *v_ptr)
         {
             this->maxGenerations = maxGenerations;
             this->numberOfRoutes = numRoutes;
             this->selectionK = selectionK;
             this->mutationRate = mutationRate;
+            this->optRate = optRate;
             this->numberOfLocations = numLocations;
             this->population = Population(populationSize, numLocations, numRoutes);
             this->distances = this->vector_from_pointer(v_ptr, numLocations + 1, numLocations + 1);
@@ -336,6 +338,39 @@ namespace ga
             individual->fitness = totalDistance;
         }
 
+        void two_opt()
+        {
+            Randomizer<std::uniform_real_distribution<float>, float> random_float(0, 1);
+
+            this->population.map([this, &random_float] (Individual *individual){
+
+                if(random_float.get_number() < this->optRate){
+                    Interval randomRoute(individual->chromossome.genes, this->numberOfLocations,this->randomizer);
+                    this->randomizer.set_range(randomRoute.startIndex, randomRoute.endIndex);
+
+                    for(int i = randomRoute.startIndex + 1; i < randomRoute.endIndex - 1; i++){
+                        int i_neigh = this->get_distance(i, i-1) + this->get_distance(i, i+1);
+
+                        for(int j = i + 1; j < randomRoute.endIndex - 1; j++){
+                            int j_neigh = this->get_distance(j, j-1) + this->get_distance(j, j+1);
+
+                            int j_in_i = this->get_distance(j, i-1) + this->get_distance(j, i+1);
+                            int i_in_j = this->get_distance(i, j-1) + this->get_distance(i, j+1);
+
+                            int currTotalDistance = i_neigh + j_neigh;
+                            int newTotalDistance = i_in_j + j_in_i;
+
+                            if(newTotalDistance < currTotalDistance){
+                                int aux = individual->chromossome.genes[i];
+                                individual->chromossome.genes[i] = individual->chromossome.genes[j];
+                                individual->chromossome.genes[j] = aux;
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
         void make_mutation()
         {
             Randomizer<std::uniform_real_distribution<float>, float> random_float(0, 1);
@@ -367,7 +402,7 @@ namespace ga
                                          this->population.best = individual;
                                      } });
 
-            for (this->population.generation; this->population.generation < this->maxGenerations; this->population.generation++)
+            for ( ; this->population.generation < this->maxGenerations; this->population.generation++)
             {
 
                 int p1, p2;
@@ -399,15 +434,26 @@ namespace ga
                 this->population.individuals[p1] = crossover1.offspring;
                 this->population.individuals[p2] = crossover2.offspring;
 
+                if(this->should_update_best(this->population.individuals[p1].fitness)){
+                    this->population.best = &this->population.individuals[p1];
+                }
+
+                if(this->should_update_best(this->population.individuals[p2].fitness)){
+                    this->population.best = &this->population.individuals[p2];
+                }
+
+                this->two_opt();
                 this->make_mutation();
+                
+                std::cout << this->population.generation << '\t' << this->population.best->fitness << '\n';
             }
         }
     };
     
     extern "C"
-    void ga_interface(int popSize, int qtyLocations, int qtyRoutes, int maxGenerations, int selectionK, float mutationRate, int *v)
+    void ga_interface(int popSize, int qtyLocations, int qtyRoutes, int maxGenerations, int selectionK, float mutationRate, float optRate,int *v)
     {
-        ga::RoutingGA ga(maxGenerations, popSize, qtyLocations, qtyRoutes, selectionK, mutationRate, v);
+        ga::RoutingGA ga(maxGenerations, popSize, qtyLocations, qtyRoutes, selectionK, mutationRate, optRate,v);
 
         ga.run();
 

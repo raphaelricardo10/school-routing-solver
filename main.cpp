@@ -17,7 +17,7 @@ int main()
     int popSize = 200;
     int qtyLocations = 15;
     int qtyRoutes = 1;
-    int maxGenerations = 100;
+    int maxGenerations = 2000;
     int selectionK = 3;
     float mutationRate = 0.05;
 
@@ -25,7 +25,7 @@ int main()
 
     ga.run();
 
-    std::cout << ga.population.best->fitness;
+    std::cout << ga.population.best->fitness << '\n';
 
     return 0;
 }
