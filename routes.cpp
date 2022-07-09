@@ -237,9 +237,10 @@ namespace ga
     public:
         int numberOfRoutes;
         int numberOfLocations;
+        float optRate;
         std::vector<std::vector<int>> distances;
 
-        RoutingGA(int maxGenerations, int populationSize, int numLocations, int numRoutes, int selectionK, float mutationRate)
+        RoutingGA(int maxGenerations, int populationSize, int numLocations, int numRoutes, int selectionK, float mutationRate, float optRate)
         {
             this->maxGenerations = maxGenerations;
             this->numberOfRoutes = numRoutes;
@@ -250,12 +251,13 @@ namespace ga
             this->generate_google_distances();
         }
 
-        RoutingGA(int maxGenerations, int populationSize, int numLocations, int numRoutes, int selectionK, float mutationRate, int *v_ptr)
+        RoutingGA(int maxGenerations, int populationSize, int numLocations, int numRoutes, int selectionK, float mutationRate, float optRate,int *v_ptr)
         {
             this->maxGenerations = maxGenerations;
             this->numberOfRoutes = numRoutes;
             this->selectionK = selectionK;
             this->mutationRate = mutationRate;
+            this->optRate = optRate;
             this->numberOfLocations = numLocations;
             this->population = Population(populationSize, numLocations, numRoutes);
             this->distances = this->vector_from_pointer(v_ptr, numLocations + 1, numLocations + 1);
@@ -342,7 +344,7 @@ namespace ga
 
             this->population.map([this, &random_float] (Individual *individual){
 
-                if(random_float.get_number() < 0.02){
+                if(random_float.get_number() < this->optRate){
                     Interval randomRoute(individual->chromossome.genes, this->numberOfLocations,this->randomizer);
                     this->randomizer.set_range(randomRoute.startIndex, randomRoute.endIndex);
 
@@ -449,9 +451,9 @@ namespace ga
     };
     
     extern "C"
-    void ga_interface(int popSize, int qtyLocations, int qtyRoutes, int maxGenerations, int selectionK, float mutationRate, int *v)
+    void ga_interface(int popSize, int qtyLocations, int qtyRoutes, int maxGenerations, int selectionK, float mutationRate, float optRate,int *v)
     {
-        ga::RoutingGA ga(maxGenerations, popSize, qtyLocations, qtyRoutes, selectionK, mutationRate, v);
+        ga::RoutingGA ga(maxGenerations, popSize, qtyLocations, qtyRoutes, selectionK, mutationRate, optRate,v);
 
         ga.run();
 
