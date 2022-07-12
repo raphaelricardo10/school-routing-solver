@@ -11,9 +11,21 @@ class GALib:
         self.routingGA = routingGA
 
         numRows, numCols = routingGA.distances.shape
-        self.lib.ga_interface.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_float, ctypes.c_float,np.ctypeslib.ndpointer(dtype=np.int32, ndim=2, shape=(numRows, numCols))]
+        self.lib.ga_interface.argtypes = [
+            ctypes.c_int,
+            ctypes.c_int,
+            ctypes.c_int,
+            ctypes.c_int,
+            ctypes.c_int,
+            ctypes.c_float,
+            ctypes.c_float,
+            np.ctypeslib.ndpointer(dtype=np.int32, ndim=2, shape=(numRows, numCols)),
+            np.ctypeslib.ndpointer(dtype=np.int32, shape=(routingGA.qtyLocations + routingGA.qtyRoutes, ))
+        ]
 
     def run(self):
+        result = np.zeros(shape=(self.routingGA.qtyLocations + self.routingGA.qtyRoutes), dtype=np.int32)
+
         self.lib.ga_interface(
             self.routingGA.popSize,
             self.routingGA.qtyLocations,
@@ -22,5 +34,8 @@ class GALib:
             self.routingGA.selectionK,
             self.routingGA.mutationRate,
             self.routingGA.optRate,
-            self.routingGA.distances
+            self.routingGA.distances,
+            result
         )
+
+        return self.routingGA.split_routes(result.tolist())
