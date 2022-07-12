@@ -18,7 +18,7 @@ addresses = ['Externato+Bastos+Silva+RJ',  # depot
              'R. Cuiabá, 661 - Trindade',
              'R. Itaperuna, 358 - Trindade',
              'R. Londrina, 104 - Trindade',
-             'Avenida Trindade, 536 - Trindade',
+             'AvenidaTrindade, 536 - Trindade, São Gonçalo, RJ',
              'R. Recife, 1609 - Trindade',
              'R. Uberlândia, 459 - Trindade',
              'R. Albino de Almeida, 85 - Trindade',
