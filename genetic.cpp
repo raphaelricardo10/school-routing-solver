@@ -265,7 +265,7 @@ namespace ga
         Population population;
         RandomizerInt randomizer;
 
-        virtual void calculate_fitness(Individual *individual) = 0;
+        virtual void calculate_fitness(Individual &individual) = 0;
 
         auto make_selection()
         {

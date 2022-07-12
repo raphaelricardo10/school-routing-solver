@@ -234,11 +234,11 @@ namespace ga
             return v;
         }
 
-        void map_routes(Individual *individual, std::function<void(int begin, int end)> func){
-            for (int i = this->numberOfLocations - 1; i < individual->chromossome.genes.size(); i++)
+        void map_routes(Individual &individual, std::function<void(int begin, int end)> func){
+            for (int i = this->numberOfLocations - 1; i < individual.chromossome.genes.size(); i++)
             {
-                int firstLocationOfRoute = i == this->numberOfLocations - 1 ? 0 : individual->chromossome.genes[i];
-                int LastLocationOfRoute = i + 1 >= individual->chromossome.genes.size() ? this->numberOfLocations : individual->chromossome.genes[i + 1];
+                int firstLocationOfRoute = i == this->numberOfLocations - 1 ? 0 : individual.chromossome.genes[i];
+                int LastLocationOfRoute = i + 1 >= individual.chromossome.genes.size() ? this->numberOfLocations : individual.chromossome.genes[i + 1];
 
                 func(firstLocationOfRoute, LastLocationOfRoute);
             }
@@ -327,21 +327,21 @@ namespace ga
             };
         }
 
-        void calculate_fitness(Individual *individual)
+        void calculate_fitness(Individual &individual)
         {
             int totalDistance = 0;
 
             this->map_routes(individual, [this, &totalDistance, individual] (int firstLocation, int lastLocation) {
                 for (int i = firstLocation; i < lastLocation; i++)
                 {
-                    int currLocation = individual->chromossome.genes[i];
-                    int prevLocation = i == firstLocation ? 0 : individual->chromossome.genes[i - 1];
+                    int currLocation = individual.chromossome.genes[i];
+                    int prevLocation = i == firstLocation ? 0 : individual.chromossome.genes[i - 1];
 
                     totalDistance += this->get_distance(currLocation, prevLocation);
                 }
             });
 
-            individual->fitness = totalDistance;
+            individual.fitness = totalDistance;
         }
 
         void two_opt()
@@ -401,7 +401,7 @@ namespace ga
         {
             this->population.map([this](Individual *individual)
                                  {
-                                     this->calculate_fitness(individual);
+                                     this->calculate_fitness(*individual);
 
                                      if (this->should_update_best(individual->fitness))
                                      {
@@ -427,12 +427,12 @@ namespace ga
                         if (!crossover1.is_acceptable())
                         {
                             crossover1.make_offspring(this->numberOfLocations, this->randomizer);
-                            this->calculate_fitness(&crossover1.offspring);
+                            this->calculate_fitness(crossover1.offspring);
                         }
                         if (!crossover2.is_acceptable())
                         {
                             crossover2.make_offspring(this->numberOfLocations, this->randomizer);
-                            this->calculate_fitness(&crossover2.offspring);
+                            this->calculate_fitness(crossover2.offspring);
                         }
                     }
                 }
