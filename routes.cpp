@@ -359,7 +359,7 @@ namespace ga
                 }
 
                 routeNum++;
-                std::cout << message << '\n';
+                // std::cout << message << '\n';
             });
         }
 
@@ -473,7 +473,7 @@ namespace ga
                 std::cout << this->population.generation << '\t' << this->population.best->fitness << '\n';
             }
 
-            this->print_routes(*this->population.best);
+            // this->print_routes(*this->population.best);
         }
     };
     
