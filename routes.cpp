@@ -3,6 +3,7 @@
 #include <deque>
 #include <unordered_set>
 #include <iostream>
+#include <string>
 #include "genetic.cpp"
 
 namespace ga
@@ -344,6 +345,24 @@ namespace ga
             individual.fitness = totalDistance;
         }
 
+        void print_routes(Individual &individual){
+            int routeNum = 1;
+            this->map_routes(individual, [this, individual, &routeNum] (int firstLocation, int lastLocation) {
+                std::string message("Route: " + std::to_string(routeNum) + ": 0 >> ");
+
+                for(int i = firstLocation; i < lastLocation; i++){
+                    if(i != firstLocation){
+                        message += " >> ";
+                    }
+
+                    message += std::to_string(individual.chromossome.genes[i]);
+                }
+
+                routeNum++;
+                std::cout << message << '\n';
+            });
+        }
+
         void two_opt()
         {
             Randomizer<std::uniform_real_distribution<float>, float> random_float(0, 1);
@@ -453,6 +472,8 @@ namespace ga
                 
                 std::cout << this->population.generation << '\t' << this->population.best->fitness << '\n';
             }
+
+            this->print_routes(*this->population.best);
         }
     };
     
