@@ -9,7 +9,18 @@ class RoutingGA:
             route = [0] + genes[breakpoints[i]: breakpoints[i+1]]
             routes.append(route)
 
+        self.routes = routes
+
         return routes
+
+    def calculate_total_distance(self):
+        total = 0
+        for route in self.routes:
+            for i in range(1, len(route)):
+                total += self.distances[i][i-1]
+
+        return total
+
 
     def __init__(self, popSize: int = None, qtyLocations: int = None, qtyRoutes: int = None, maxGenerations: int = None, selectionK: int = None, mutationRate: float = None, optRate: float = None, distances: 'list[list[int]]' = None) -> None:
         self.popSize = popSize
@@ -20,3 +31,4 @@ class RoutingGA:
         self.mutationRate = mutationRate
         self.optRate = optRate
         self.distances = np.array(distances, dtype=np.int32)
+        self.routes = []

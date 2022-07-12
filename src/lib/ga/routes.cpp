@@ -359,7 +359,7 @@ namespace ga
                 }
 
                 routeNum++;
-                // std::cout << message << '\n';
+                std::cout << message << '\n';
             });
         }
 
@@ -470,7 +470,7 @@ namespace ga
                 this->two_opt();
                 this->make_mutation();
                 
-                std::cout << this->population.generation << '\t' << this->population.best->fitness << '\n';
+                // std::cout << this->population.generation << '\t' << this->population.best->fitness << '\n';
             }
 
             // this->print_routes(*this->population.best);
@@ -484,7 +484,7 @@ namespace ga
 
         ga.run();
 
-        std::cout << ga.population.best->fitness << '\n';
+        // std::cout << ga.population.best->fitness << '\n';
 
         for(int i = 0; i < ga.population.best->chromossome.genes.size(); i++){
             result[i] = ga.population.best->chromossome.genes[i];

@@ -4,7 +4,7 @@ import pickle
 import numpy as np
 
 from datetime import datetime as dt
-from data import addresses
+from data.addresses import addresses
 
 class Destination:
     def __init__(self, address: str, distance: int) -> None:
@@ -48,13 +48,13 @@ class MapsAPI:
                 distances[source] += result
 
         if shouldCache:
-            with open('distanceData.txt', 'wb') as file:
+            with open('cache/distance_matrix', 'wb') as file:
                 pickle.dump(distances, file)
 
         return distances
 
     def get_from_cache():
-        with open('distanceData.txt', 'rb') as f:
+        with open('cache/distance_matrix', 'rb') as f:
             return pickle.load(f)
 
     def join_distance_matrix(chunks: 'dict[str, list[str]]'):
