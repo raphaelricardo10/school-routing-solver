@@ -234,6 +234,16 @@ namespace ga
             return v;
         }
 
+        void map_routes(Individual *individual, std::function<void(int begin, int end)> func){
+            for (int i = this->numberOfLocations - 1; i < individual->chromossome.genes.size(); i++)
+            {
+                int firstLocationOfRoute = i == this->numberOfLocations - 1 ? 0 : individual->chromossome.genes[i];
+                int LastLocationOfRoute = i + 1 >= individual->chromossome.genes.size() ? this->numberOfLocations : individual->chromossome.genes[i + 1];
+
+                func(firstLocationOfRoute, LastLocationOfRoute);
+            }
+        }
+
     public:
         int numberOfRoutes;
         int numberOfLocations;
@@ -321,19 +331,15 @@ namespace ga
         {
             int totalDistance = 0;
 
-            for (int i = this->numberOfLocations - 1; i < individual->chromossome.genes.size(); i++)
-            {
-                int firstLocationOfRoute = i == this->numberOfLocations - 1 ? 0 : individual->chromossome.genes[i];
-                int LastLocationOfRoute = i + 1 >= individual->chromossome.genes.size() ? this->numberOfLocations : individual->chromossome.genes[i + 1];
-
-                for (int j = firstLocationOfRoute; j < LastLocationOfRoute; j++)
+            this->map_routes(individual, [this, &totalDistance, individual] (int firstLocation, int lastLocation) {
+                for (int i = firstLocation; i < lastLocation; i++)
                 {
-                    int currLocation = individual->chromossome.genes[j];
-                    int prevLocation = j == firstLocationOfRoute ? 0 : individual->chromossome.genes[j - 1];
+                    int currLocation = individual->chromossome.genes[i];
+                    int prevLocation = i == firstLocation ? 0 : individual->chromossome.genes[i - 1];
 
                     totalDistance += this->get_distance(currLocation, prevLocation);
                 }
-            }
+            });
 
             individual->fitness = totalDistance;
         }
