@@ -20,8 +20,9 @@ int main()
     int maxGenerations = 2000;
     int selectionK = 3;
     float mutationRate = 0.05;
+    float optRate = 0.02;
 
-    ga::RoutingGA ga(maxGenerations, popSize, qtyLocations, qtyRoutes, selectionK, mutationRate);
+    ga::RoutingGA ga(maxGenerations, popSize, qtyLocations, qtyRoutes, selectionK, mutationRate, optRate);
 
     ga.run();
 
