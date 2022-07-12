@@ -478,9 +478,9 @@ namespace ga
     };
     
     extern "C"
-    void ga_interface(int popSize, int qtyLocations, int qtyRoutes, int maxGenerations, int selectionK, float mutationRate, float optRate, int *v, int *result)
+    void ga_interface(int popSize, int qtyLocations, int qtyRoutes, int maxGenerations, int selectionK, float mutationRate, float optRate, int *distances, int *result)
     {
-        ga::RoutingGA ga(maxGenerations, popSize, qtyLocations, qtyRoutes, selectionK, mutationRate, optRate, v);
+        ga::RoutingGA ga(maxGenerations, popSize, qtyLocations, qtyRoutes, selectionK, mutationRate, optRate, distances);
 
         ga.run();
 
