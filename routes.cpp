@@ -478,12 +478,16 @@ namespace ga
     };
     
     extern "C"
-    void ga_interface(int popSize, int qtyLocations, int qtyRoutes, int maxGenerations, int selectionK, float mutationRate, float optRate,int *v)
+    void ga_interface(int popSize, int qtyLocations, int qtyRoutes, int maxGenerations, int selectionK, float mutationRate, float optRate, int *v, int *result)
     {
-        ga::RoutingGA ga(maxGenerations, popSize, qtyLocations, qtyRoutes, selectionK, mutationRate, optRate,v);
+        ga::RoutingGA ga(maxGenerations, popSize, qtyLocations, qtyRoutes, selectionK, mutationRate, optRate, v);
 
         ga.run();
 
         std::cout << ga.population.best->fitness << '\n';
+
+        for(int i = 0; i < ga.population.best->chromossome.genes.size(); i++){
+            result[i] = ga.population.best->chromossome.genes[i];
+        }
     }
 }
