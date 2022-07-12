@@ -348,10 +348,10 @@ namespace ga
         {
             Randomizer<std::uniform_real_distribution<float>, float> random_float(0, 1);
 
-            this->population.map([this, &random_float] (Individual *individual){
+            this->population.map([this, &random_float] (Individual &individual){
 
                 if(random_float.get_number() < this->optRate){
-                    Interval randomRoute(individual->chromossome.genes, this->numberOfLocations,this->randomizer);
+                    Interval randomRoute(individual.chromossome.genes, this->numberOfLocations,this->randomizer);
                     this->randomizer.set_range(randomRoute.startIndex, randomRoute.endIndex);
 
                     for(int i = randomRoute.startIndex + 1; i < randomRoute.endIndex - 1; i++){
@@ -367,9 +367,9 @@ namespace ga
                             int newTotalDistance = i_in_j + j_in_i;
 
                             if(newTotalDistance < currTotalDistance){
-                                int aux = individual->chromossome.genes[i];
-                                individual->chromossome.genes[i] = individual->chromossome.genes[j];
-                                individual->chromossome.genes[j] = aux;
+                                int aux = individual.chromossome.genes[i];
+                                individual.chromossome.genes[i] = individual.chromossome.genes[j];
+                                individual.chromossome.genes[j] = aux;
                             }
                         }
                     }
@@ -381,7 +381,7 @@ namespace ga
         {
             Randomizer<std::uniform_real_distribution<float>, float> random_float(0, 1);
 
-            this->population.map([this, &random_float] (Individual *individual){
+            this->population.map([this, &random_float] (Individual &individual){
                 random_float.get_number();
 
                 if(random_float.get_number() < this->mutationRate){
@@ -389,23 +389,23 @@ namespace ga
                     int index1 = this->randomizer.get_number();
                     int index2 = this->randomizer.get_number(index1);
 
-                    int aux = individual->chromossome.genes[index1];
+                    int aux = individual.chromossome.genes[index1];
 
-                    individual->chromossome.genes[index1] = individual->chromossome.genes[index2];
-                    individual->chromossome.genes[index2] = aux;
+                    individual.chromossome.genes[index1] = individual.chromossome.genes[index2];
+                    individual.chromossome.genes[index2] = aux;
                 }
             });
         }
 
         void run()
         {
-            this->population.map([this](Individual *individual)
+            this->population.map([this](Individual &individual)
                                  {
-                                     this->calculate_fitness(*individual);
+                                     this->calculate_fitness(individual);
 
-                                     if (this->should_update_best(individual->fitness))
+                                     if (this->should_update_best(individual.fitness))
                                      {
-                                         this->population.best = individual;
+                                         this->population.best = &individual;
                                      } });
 
             for ( ; this->population.generation < this->maxGenerations; this->population.generation++)

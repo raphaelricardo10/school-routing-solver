@@ -205,11 +205,11 @@ namespace ga
             this->generate_individuals(qtyBreaks);
         }
 
-        void map(std::function<void(Individual *)> func)
+        void map(std::function<void(Individual &)> func)
         {
             for (auto i = this->individuals.begin(); i != this->individuals.end(); ++i)
             {
-                func(&(*i));
+                func(*i);
             }
         }
 
