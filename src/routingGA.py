@@ -13,9 +13,10 @@ class RoutingGA:
 
         return routes
 
-    def calculate_total_distance(self):
+    def calculate_total_distance(self, routes = None):
         total = 0
-        for route in self.routes:
+        routes = routes or self.routes
+        for route in routes:
             for i in range(1, len(route)):
                 total += self.distances[i][i-1]
 
