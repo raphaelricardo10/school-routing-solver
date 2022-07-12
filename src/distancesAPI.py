@@ -92,15 +92,15 @@ class MapsAPI:
 
         return sym_distances
 
-    def save_to_image(self, routes):
-        with open('driving_route_map.jpg', 'wb') as img:
+    def save_to_image(self, routes, filename):
+        with open(f'images/{filename}.jpg', 'wb') as img:
             for chunk in self.plot_directions(routes):
                 img.write(chunk)
 
     def directions(self, destination, source, waypoints: 'list[str]'):
         return self.client.directions(
-            destination,
             source,
+            destination,
             mode="driving",
             avoid=["highways", "tolls", "ferries"],
             waypoints=waypoints,
@@ -130,11 +130,12 @@ class MapsAPI:
         result_map = self.client.static_map(
             center=waypoints[0],
             scale=2,
-            zoom=13,
+            zoom=14,
             size=[640, 640],
             format="jpg",
             maptype="roadmap",
             markers=markers,
+            style={"feature": "poi|visibility:off"},
             path="color:0x0000ff|weight:2|" + "|".join(waypoints))
 
         return result_map
