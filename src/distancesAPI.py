@@ -17,7 +17,7 @@ class MapsAPI:
         self.key = key
         self.client = googlemaps.Client(key)
 
-    def distance_matrix(self, source, destination):
+    def distance_matrix(self, source, destination, calculateTime = False):
         response = self.client.distance_matrix(
             source,
             destination,
@@ -31,12 +31,14 @@ class MapsAPI:
 
         distances = []
 
+        metric = 'duration' if calculateTime else 'distance'
+
         for row in response['rows']:
-            distances.append([x['distance']['value'] for x in row['elements']])
+            distances.append([x[metric]['value'] for x in row['elements']])
 
         return distances
 
-    def split_distance_request(self, chunks: list, shouldCache = True):
+    def split_distance_request(self, chunks: list, shouldCache = True, calculateTime = False):
         distances = {}
         for address_chunk in chunks:
             for source, destinations in address_chunk.items():
@@ -96,6 +98,22 @@ class MapsAPI:
         with open(f'images/{filename}.jpg', 'wb') as img:
             for chunk in self.plot_directions(routes):
                 img.write(chunk)
+
+    def split_directions_request(self, locations, maxLen = 26):
+        locations = locations[:] + [locations[0]]
+        chunks = [locations[x-1:x+maxLen] for x in range(1, len(locations), maxLen)]
+        
+        responses = []
+        for chunk in chunks:
+            responses.append(self.directions(chunk[-1], chunk[0], chunk[1: -1]))
+
+        full_directions = responses[0]
+
+        for response in responses:
+            full_directions[0]['legs'] += [x for x in response[0]['legs']]
+
+        return full_directions
+            
 
     def directions(self, destination, source, waypoints: 'list[str]'):
         return self.client.directions(
