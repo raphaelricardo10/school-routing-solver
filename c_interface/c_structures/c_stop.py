@@ -1,6 +1,7 @@
 import ctypes
 
 from domain.stop import Stop
+from c_interface.c_structures.model_list import ModelList
 
 
 class C_Stop(ctypes.Structure):
@@ -14,3 +15,12 @@ class C_Stop(ctypes.Structure):
 
     def to_obj(self):
         return Stop(self.id, self.usage)
+
+
+class C_VehicleList(ModelList):
+    @staticmethod
+    def from_obj(stops: 'list[Stop]') -> 'list[C_Stop]':
+        return ModelList.from_obj(stops, C_Stop)
+
+    def to_obj(self) -> 'list[Stop]':
+        return super().to_obj()

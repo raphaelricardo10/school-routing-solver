@@ -3,6 +3,7 @@ import ctypes
 from domain.route import Route
 from c_interface.c_structures.c_stop import C_Stop
 from c_interface.c_structures.c_vehicle import C_Vehicle
+from c_interface.c_structures.model_list import ModelList
 
 
 class C_Route(ctypes.Structure):
@@ -18,3 +19,12 @@ class C_Route(ctypes.Structure):
 
     def to_obj(self):
         return Route(self.vehicle, [], self.total_distance)
+
+
+class C_VehicleList(ModelList):
+    @staticmethod
+    def from_obj(routes: 'list[Route]') -> 'list[C_Route]':
+        return ModelList.from_obj(routes, C_Route)
+
+    def to_obj(self) -> 'list[Route]':
+        return super().to_obj()
