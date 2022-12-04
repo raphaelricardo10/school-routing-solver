@@ -33,3 +33,9 @@ def test_can_add_vehicle_to_array_from_library(test_lib: TestLib):
     assert result[2].usage == 0
     
     
+def test_can_read_distance_matrix_from_library(test_lib: TestLib):
+    distances = [[0,1], [2, 3]]
+
+    for i, row in enumerate(distances):
+        for j, distance in enumerate(row):
+            assert test_lib.read_distance_matrix(distances, i, j) == distance

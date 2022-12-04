@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 
 import ctypes
+import numpy as np
 
 from pytest import fixture
 
@@ -13,6 +14,7 @@ from domain.vehicle import Vehicle
 
 from c_interface.c_structures.c_stop import C_Stop
 from c_interface.c_structures.c_vehicle import C_Vehicle
+from c_interface.c_structures.c_distance_matrix import C_DistanceMatrix
 
 
 class TestLib(SharedLibrary):
@@ -20,7 +22,15 @@ class TestLib(SharedLibrary):
         functions = [
             C_Function('update_vehicle', [C_Vehicle], C_Vehicle),
             C_Function('update_stop', [C_Stop], C_Stop),
-            C_Function('add_vehicle_to_array', [(C_Vehicle * 2)], (C_Vehicle * 3)),
+            C_Function('add_vehicle_to_array', [
+                       (C_Vehicle * 2)], (C_Vehicle * 3)),
+            C_Function('read_distance_matrix', [
+                       np.ctypeslib.ndpointer(
+                           dtype=np.float64, ndim=2, shape=(2, 2)),
+                       ctypes.c_size_t,
+                       ctypes.c_size_t,
+                       ctypes.c_size_t
+                       ], ctypes.c_double),
         ]
 
         super().__init__(path, functions)
@@ -42,9 +52,12 @@ class TestLib(SharedLibrary):
         result = (C_Vehicle * 3)()
 
         self._run('add_vehicle_to_array', c_vehicles,
-                                           number_of_vehicles, result)
+                  number_of_vehicles, result)
 
         return [x.to_obj() for x in result]
+
+    def read_distance_matrix(self, distances: 'list[list[float]]', a: int, b: int) -> float:
+        return self._run('read_distance_matrix', C_DistanceMatrix.from_obj(distances), 2, a, b)
 
 
 @fixture
