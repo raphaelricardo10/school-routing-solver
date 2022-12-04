@@ -9,5 +9,8 @@ class C_Stop(ctypes.Structure):
         ("usage", ctypes.c_uint32),
     ]
 
+    def from_obj(stop: Stop):
+        return C_Stop(stop.id, stop.usage)
+
     def to_obj(self):
         return Stop(self.id, self.usage)
