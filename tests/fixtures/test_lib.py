@@ -20,6 +20,7 @@ class TestLib(SharedLibrary):
         functions = [
             C_Function('update_vehicle', [C_Vehicle], C_Vehicle),
             C_Function('update_stop', [C_Stop], C_Stop),
+            C_Function('add_vehicle_to_array', [(C_Vehicle * 2)], (C_Vehicle * 3)),
         ]
 
         super().__init__(path, functions)
@@ -36,15 +37,9 @@ class TestLib(SharedLibrary):
         return result.to_obj()
 
     def add_vehicle(self, vehicles: 'list[Vehicle]', number_of_vehicles: int) -> 'list[Vehicle]':
-        input_array = (C_Vehicle * len(vehicles))
-        output_array = (C_Vehicle * (len(vehicles) + 1))
-
-        self._update_arg_types('add_vehicle_to_array', [input_array])
-        self._update_return_type('add_vehicle_to_array', output_array)
-
         c_vehicles = [C_Vehicle.from_obj(x) for x in vehicles]
-        c_vehicles = input_array(*c_vehicles)
-        result = output_array()
+        c_vehicles = (C_Vehicle * 2)(*c_vehicles)
+        result = (C_Vehicle * 3)()
 
         self._run('add_vehicle_to_array', c_vehicles,
                                            number_of_vehicles, result)
