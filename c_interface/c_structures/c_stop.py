@@ -17,7 +17,7 @@ class C_Stop(ctypes.Structure):
         return Stop(self.id, self.usage)
 
 
-class C_VehicleList(ModelList):
+class C_StopList(ModelList):
     @staticmethod
     def from_obj(stops: 'list[Stop]') -> 'list[C_Stop]':
         return ModelList.from_obj(stops, C_Stop)
