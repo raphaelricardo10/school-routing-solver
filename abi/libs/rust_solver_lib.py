@@ -5,10 +5,10 @@ import ctypes
 from domain.stop import Stop
 from domain.vehicle import Vehicle
 
-from abi.structures.abi_stop import C_Stop, C_StopList
-from abi.structures.abi_vehicle import C_Vehicle, C_VehicleList
+from abi.structures.abi_stop import ABIStop, ABIStopList
+from abi.structures.abi_vehicle import ABIVehicle, ABIVehicleList
 from abi.structures.empty_buffer import EmptyBuffer
-from abi.structures.abi_distance_matrix import C_DistanceMatrix, C_DistanceMatrixEntry
+from abi.structures.abi_distance_matrix import ABIDistanceMatrix, ABIDistanceMatrixEntry
 
 from abi.shared_library import SharedLibrary
 
@@ -41,9 +41,9 @@ class RustSolverLib(SharedLibrary):
         result_size = len(stops) + len(vehicles)
 
         arg_types = [
-            (C_Vehicle * len(vehicles)),  # Vehicles array pointer
-            (C_Stop * len(stops)),  # Stops array pointer
-            (C_DistanceMatrixEntry * len(distances)),  # Distance matrix
+            (ABIVehicle * len(vehicles)),  # Vehicles array pointer
+            (ABIStop * len(stops)),  # Stops array pointer
+            (ABIDistanceMatrixEntry * len(distances)),  # Distance matrix
             ArgSizes, # Length of all pointer arguments
             GAParameters,  # Parameters of genetic algorithm
             (ctypes.c_uint32 * result_size)  # Output vector
@@ -55,7 +55,7 @@ class RustSolverLib(SharedLibrary):
 
         arg_sizes = ArgSizes(len(vehicles), len(stops), len(distances), result_size)
 
-        self._run('genetic_solver', C_VehicleList.from_obj(vehicles), C_StopList.from_obj(
-            stops), C_DistanceMatrix.from_obj(distances), arg_sizes, parameters, result)
+        self._run('genetic_solver', ABIVehicleList.from_obj(vehicles), ABIStopList.from_obj(
+            stops), ABIDistanceMatrix.from_obj(distances), arg_sizes, parameters, result)
 
         return result

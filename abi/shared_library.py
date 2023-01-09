@@ -1,15 +1,15 @@
 import ctypes
-from abi.abi_function import C_Function
+from abi.abi_function import ABIFunction
 
 
 class SharedLibrary:
 
-    def __init__(self, path: str, functions: 'list[C_Function]'):
+    def __init__(self, path: str, functions: 'list[ABIFunction]'):
         self.lib = ctypes.cdll.LoadLibrary(path)
 
         self._map_functions(functions)
 
-    def _map_functions(self, functions: 'list[C_Function]'):
+    def _map_functions(self, functions: 'list[ABIFunction]'):
         for func in functions:
             lib_attr = self.lib.__getattr__(func.name)
             lib_attr.argtypes = func.arg_types

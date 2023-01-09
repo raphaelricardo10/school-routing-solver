@@ -6,27 +6,27 @@ import numpy as np
 
 from pytest import fixture
 
-from abi.abi_function import C_Function
+from abi.abi_function import ABIFunction
 from abi.shared_library import SharedLibrary
 from abi.structures.empty_buffer import EmptyBuffer
 
 from domain.stop import Stop
 from domain.vehicle import Vehicle
 
-from abi.structures.abi_stop import C_Stop
-from abi.structures.abi_vehicle import C_Vehicle, C_VehicleList
-from abi.structures.abi_distance_matrix import C_DistanceMatrix, C_DistanceMatrixEntry
+from abi.structures.abi_stop import ABIStop
+from abi.structures.abi_vehicle import ABIVehicle, ABIVehicleList
+from abi.structures.abi_distance_matrix import ABIDistanceMatrix, ABIDistanceMatrixEntry
 
 
-class TestLib(SharedLibrary):
+class ABITestLib(SharedLibrary):
     def __init__(self, path: str):
         functions = [
-            C_Function('update_vehicle', [C_Vehicle], C_Vehicle),
-            C_Function('update_stop', [C_Stop], C_Stop),
-            C_Function('add_vehicle_to_array', [
-                       (C_Vehicle * 2)], (C_Vehicle * 3)),
-            C_Function('read_distance_matrix', [
-                       (C_DistanceMatrixEntry * 4),  # Distances
+            ABIFunction('update_vehicle', [ABIVehicle], ABIVehicle),
+            ABIFunction('update_stop', [ABIStop], ABIStop),
+            ABIFunction('add_vehicle_to_array', [
+                       (ABIVehicle * 2)], (ABIVehicle * 3)),
+            ABIFunction('read_distance_matrix', [
+                       (ABIDistanceMatrixEntry * 4),  # Distances
                        ctypes.c_size_t,  # Number of entries
                        ctypes.c_uint32,  # Point A
                        ctypes.c_uint32,  # Point B
@@ -36,34 +36,34 @@ class TestLib(SharedLibrary):
         super().__init__(path, functions)
 
     def update_vehicle(self, vehicle: Vehicle) -> Vehicle:
-        result: C_Vehicle = self._run(
-            'update_vehicle', C_Vehicle.from_obj(vehicle))
+        result: ABIVehicle = self._run(
+            'update_vehicle', ABIVehicle.from_obj(vehicle))
 
         return result.to_obj()
 
     def update_stop(self, stop: Stop) -> Stop:
-        result: C_Stop = self._run('update_stop', C_Stop.from_obj(stop))
+        result: ABIStop = self._run('update_stop', ABIStop.from_obj(stop))
 
         return result.to_obj()
 
     def add_vehicle(self, vehicles: 'list[Vehicle]', number_of_vehicles: int) -> 'list[Vehicle]':
-        result = EmptyBuffer(C_Vehicle, 3)
+        result = EmptyBuffer(ABIVehicle, 3)
 
-        self._run('add_vehicle_to_array', C_VehicleList.from_obj(vehicles),
+        self._run('add_vehicle_to_array', ABIVehicleList.from_obj(vehicles),
                   number_of_vehicles, result)
 
-        return C_VehicleList(result).to_obj()
+        return ABIVehicleList(result).to_obj()
 
     def read_distance_matrix(self, distances: 'list[list[float]]', a: int, b: int) -> float:
-        return self._run('read_distance_matrix', C_DistanceMatrix.from_obj(distances), len(distances), a, b)
+        return self._run('read_distance_matrix', ABIDistanceMatrix.from_obj(distances), len(distances), a, b)
 
 
 @fixture
-def test_lib() -> TestLib:
+def test_lib() -> ABITestLib:
     load_dotenv()
     try:
         lib_path = os.environ['LIB_PATH']
-        return TestLib(lib_path)
+        return ABITestLib(lib_path)
 
     except KeyError:
         raise ValueError('Please, provide the LIB_PATH variable in .env file')

@@ -4,24 +4,24 @@ import ctypes
 from abi.structures.model_list import ModelList
 
 
-class C_DistanceMatrixEntry(ctypes.Structure):
+class ABIDistanceMatrixEntry(ctypes.Structure):
     _fields_ = [
         ("from", ctypes.c_int32),
         ("to", ctypes.c_int32),
         ("distance", ctypes.c_double)
     ]
 
-    def from_obj(entry: list) -> C_DistanceMatrixEntry:
-        return C_DistanceMatrixEntry(*entry[:3])
+    def from_obj(entry: list) -> ABIDistanceMatrixEntry:
+        return ABIDistanceMatrixEntry(*entry[:3])
 
     def to_obj(self) -> list:
         return [getattr(self, 'from'), self.to, self.distance]
 
 
-class C_DistanceMatrix(ModelList):
+class ABIDistanceMatrix(ModelList):
 
-    def from_obj(distances: 'list[list[float]]') -> 'list[C_DistanceMatrixEntry]':
-        return ModelList.from_obj(distances, C_DistanceMatrixEntry)
+    def from_obj(distances: 'list[list[float]]') -> 'list[ABIDistanceMatrixEntry]':
+        return ModelList.from_obj(distances, ABIDistanceMatrixEntry)
 
-    def to_obj(distances: 'list[C_DistanceMatrixEntry]') -> 'list[list[float]]':
+    def to_obj(distances: 'list[ABIDistanceMatrixEntry]') -> 'list[list[float]]':
         return super().to_obj()
