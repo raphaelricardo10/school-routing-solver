@@ -1,6 +1,6 @@
 from pytest import fixture
 
-from c_interface.libs.rust_solver_lib import GAParameters
+from abi.libs.rust_solver_lib import GAParameters
 
 @fixture
 def genetic_algorithm_parameters():

@@ -1,9 +1,9 @@
 import ctypes
 
 from domain.route import Route
-from c_interface.c_structures.c_stop import C_Stop
-from c_interface.c_structures.c_vehicle import C_Vehicle
-from c_interface.c_structures.model_list import ModelList
+from abi.structures.abi_stop import C_Stop
+from abi.structures.abi_vehicle import C_Vehicle
+from abi.structures.model_list import ModelList
 
 
 class C_Route(ctypes.Structure):

@@ -1,5 +1,5 @@
 import ctypes
-from c_interface.c_function import C_Function
+from abi.abi_function import C_Function
 
 
 class SharedLibrary:

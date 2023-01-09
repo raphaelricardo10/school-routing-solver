@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 
 from pytest import fixture
 
-from c_interface.libs.rust_solver_lib import RustSolverLib
+from abi.libs.rust_solver_lib import RustSolverLib
 
 
 @fixture

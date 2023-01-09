@@ -1,6 +1,6 @@
 import ctypes
 from domain.vehicle import Vehicle
-from c_interface.c_structures.model_list import ModelList
+from abi.structures.model_list import ModelList
 
 
 class C_Vehicle(ctypes.Structure):

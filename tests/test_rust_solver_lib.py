@@ -1,7 +1,7 @@
 from domain.stop import Stop
 from domain.vehicle import Vehicle
 
-from c_interface.libs.rust_solver_lib import GAParameters, RustSolverLib
+from abi.libs.rust_solver_lib import GAParameters, RustSolverLib
 
 from tests.fixtures.rust_solver_lib import rust_solver_lib
 from tests.fixtures.domain import vehicles, stops, distances

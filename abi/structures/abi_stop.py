@@ -1,7 +1,7 @@
 import ctypes
 
 from domain.stop import Stop
-from c_interface.c_structures.model_list import ModelList
+from abi.structures.model_list import ModelList
 
 
 class C_Stop(ctypes.Structure):

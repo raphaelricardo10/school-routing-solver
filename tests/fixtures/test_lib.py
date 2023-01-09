@@ -6,16 +6,16 @@ import numpy as np
 
 from pytest import fixture
 
-from c_interface.c_function import C_Function
-from c_interface.shared_library import SharedLibrary
-from c_interface.c_structures.empty_buffer import EmptyBuffer
+from abi.abi_function import C_Function
+from abi.shared_library import SharedLibrary
+from abi.structures.empty_buffer import EmptyBuffer
 
 from domain.stop import Stop
 from domain.vehicle import Vehicle
 
-from c_interface.c_structures.c_stop import C_Stop
-from c_interface.c_structures.c_vehicle import C_Vehicle, C_VehicleList
-from c_interface.c_structures.c_distance_matrix import C_DistanceMatrix, C_DistanceMatrixEntry
+from abi.structures.abi_stop import C_Stop
+from abi.structures.abi_vehicle import C_Vehicle, C_VehicleList
+from abi.structures.abi_distance_matrix import C_DistanceMatrix, C_DistanceMatrixEntry
 
 
 class TestLib(SharedLibrary):

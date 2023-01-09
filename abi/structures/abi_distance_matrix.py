@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import ctypes
-from c_interface.c_structures.model_list import ModelList
+from abi.structures.model_list import ModelList
 
 
 class C_DistanceMatrixEntry(ctypes.Structure):
