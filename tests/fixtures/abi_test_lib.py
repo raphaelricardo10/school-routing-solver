@@ -2,7 +2,6 @@ import os
 from dotenv import load_dotenv
 
 import ctypes
-import numpy as np
 
 from pytest import fixture
 
