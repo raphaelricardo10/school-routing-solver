@@ -1,7 +1,7 @@
 from domain.stop import Stop
 from domain.vehicle import Vehicle
 
-from tests.fixtures.test_lib import test_lib, ABITestLib
+from tests.fixtures.abi_test_lib import ABITestLib
 
 
 def test_can_update_vehicle_with_library(test_lib: ABITestLib):
