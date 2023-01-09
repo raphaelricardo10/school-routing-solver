@@ -1,0 +1,3 @@
+[submodule "src/lib/vrp_solver_rust"]
+	path = src/lib/vrp_solver_rust
+	url = https://github.com/raphaelricardo10/vrp-solver.git
