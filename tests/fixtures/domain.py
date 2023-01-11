@@ -15,7 +15,7 @@ def vehicles():
 @fixture
 def stops():
     return [
-        Stop(0, 5),
+        Stop(0, 0),
         Stop(1, 5),
         Stop(2, 5),
         Stop(3, 5),
