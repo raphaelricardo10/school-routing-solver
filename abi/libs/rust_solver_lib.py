@@ -5,6 +5,7 @@ import ctypes
 from domain.stop import Stop
 from domain.vehicle import Vehicle
 
+from abi.abi_function import ABIFunction
 from abi.structures.abi_stop import ABIStop, ABIStopList
 from abi.structures.abi_vehicle import ABIVehicle, ABIVehicleList
 from abi.structures.empty_buffer import EmptyBuffer
@@ -22,6 +23,7 @@ class GAParameters(ctypes.Structure):
         ("max_generations", ctypes.c_uint32),
     ]
 
+
 class ArgSizes(ctypes.Structure):
     _fields_ = [
         ("vehicles", ctypes.c_size_t),
@@ -33,29 +35,44 @@ class ArgSizes(ctypes.Structure):
 
 class RustSolverLib(SharedLibrary):
     def __init__(self, path: str):
-        functions = []
+        functions = [
+            ABIFunction(
+                name="genetic_solver",
+                arg_types=[
+                    (ctypes.POINTER(ABIVehicle)),  # Vehicles array pointer
+                    (ctypes.POINTER(ABIStop)),  # Stops array pointer
+                    (ctypes.POINTER(ABIDistanceMatrixEntry)),  # Distance matrix
+                    ArgSizes,  # Length of all pointer arguments
+                    GAParameters,  # Parameters of genetic algorithm
+                    (ctypes.POINTER(ctypes.c_uint32)),  # Output vector
+                ],
+                return_type=ctypes.POINTER(ctypes.c_uint32),
+            )
+        ]
 
         super().__init__(path, functions)
 
-    def run_genetic_solver(self, vehicles: 'list[Vehicle]', stops: 'list[Stop]', distances: 'list[list[float]]', parameters: GAParameters) -> 'list[int]':
+    def run_genetic_solver(
+        self,
+        vehicles: "list[Vehicle]",
+        stops: "list[Stop]",
+        distances: "list[list[float]]",
+        parameters: GAParameters,
+    ) -> "list[int]":
         result_size = len(stops) + len(vehicles)
-
-        arg_types = [
-            (ABIVehicle * len(vehicles)),  # Vehicles array pointer
-            (ABIStop * len(stops)),  # Stops array pointer
-            (ABIDistanceMatrixEntry * len(distances)),  # Distance matrix
-            ArgSizes, # Length of all pointer arguments
-            GAParameters,  # Parameters of genetic algorithm
-            (ctypes.c_uint32 * result_size)  # Output vector
-        ]
-
-        self._update_arg_types('genetic_solver', arg_types)
 
         result = EmptyBuffer(ctypes.c_uint32, result_size)
 
         arg_sizes = ArgSizes(len(vehicles), len(stops), len(distances), result_size)
 
-        self._run('genetic_solver', ABIVehicleList.from_obj(vehicles), ABIStopList.from_obj(
-            stops), ABIDistanceMatrix.from_obj(distances), arg_sizes, parameters, result)
+        self._run(
+            "genetic_solver",
+            ABIVehicleList.from_obj(vehicles),
+            ABIStopList.from_obj(stops),
+            ABIDistanceMatrix.from_obj(distances),
+            arg_sizes,
+            parameters,
+            result,
+        )
 
         return result
