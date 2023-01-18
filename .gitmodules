@@ -1,6 +1,6 @@
 [submodule "src/lib/vrp_solver_rust"]
-	path = src/lib/vrp_solver_rust
+	path = lib/vrp_solver_rust
 	url = https://github.com/raphaelricardo10/vrp-solver.git
 [submodule "src/lib/cpp-vrp-solver"]
-	path = src/lib/cpp-vrp-solver
+	path = lib/cpp-vrp-solver
 	url = https://github.com/raphaelricardo10/cpp-vrp-solver.git
