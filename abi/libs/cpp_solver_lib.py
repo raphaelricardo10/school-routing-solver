@@ -1,33 +1,44 @@
 from __future__ import annotations
 
-import numpy as np
 import ctypes
+import numpy as np
 
+from src.routingGA import RoutingGA
 
+from abi.abi_function import ABIFunction
 from abi.shared_library import SharedLibrary
 
 
 class GALib(SharedLibrary):
-    def __init__(self, libPath: str) -> GALib:
-        self.lib = ctypes.cdll.LoadLibrary(libPath)
+    def __init__(self, routingGA: RoutingGA, libPath: str) -> GALib:
         self.routingGA = routingGA
 
         numRows, numCols = routingGA.distances.shape
-        self.lib.ga_interface.argtypes = [
-            ctypes.c_int,
-            ctypes.c_int,
-            ctypes.c_int,
-            ctypes.c_int,
-            ctypes.c_int,
-            ctypes.c_float,
-            ctypes.c_float,
-            np.ctypeslib.ndpointer(
-                dtype=np.int32, ndim=2, shape=(numRows, numCols)),
-            np.ctypeslib.ndpointer(
-                dtype=np.int32, shape=(
-                    routingGA.qtyLocations + routingGA.qtyRoutes,)
-            ),
-        ]
+
+        super().__init__(
+            libPath,
+            functions=[
+                ABIFunction(
+                    name="ga_interface",
+                    arg_types=[
+                        ctypes.c_int,  # Population size
+                        ctypes.c_int,  # Quantity of locations
+                        ctypes.c_int,  # Quantity of routes
+                        ctypes.c_int,  # Maximum of generations
+                        ctypes.c_int,  # Selection K value
+                        ctypes.c_float,  # Mutation rate
+                        ctypes.c_float,  # 2-opt rate
+                        np.ctypeslib.ndpointer(  # Distance matrix
+                            dtype=np.int32, ndim=2, shape=(numRows, numCols)
+                        ),
+                        np.ctypeslib.ndpointer(  # Output vector
+                            dtype=np.int32,
+                            shape=(routingGA.qtyLocations + routingGA.qtyRoutes,),
+                        ),
+                    ],
+                )
+            ],
+        )
 
     def run(self):
         result = np.zeros(
