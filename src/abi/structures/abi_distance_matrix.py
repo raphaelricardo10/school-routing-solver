@@ -11,6 +11,7 @@ class ABIDistanceMatrixEntry(ctypes.Structure):
         ("distance", ctypes.c_double),
     ]
 
+    @staticmethod
     def from_obj(entry: list) -> ABIDistanceMatrixEntry:
         return ABIDistanceMatrixEntry(*entry[:3])
 
@@ -19,8 +20,9 @@ class ABIDistanceMatrixEntry(ctypes.Structure):
 
 
 class ABIDistanceMatrix(ModelList):
+    @staticmethod
     def from_obj(distances: "list[list[float]]") -> "list[ABIDistanceMatrixEntry]":
         return ModelList.from_obj(distances, ABIDistanceMatrixEntry)
 
-    def to_obj(distances: "list[ABIDistanceMatrixEntry]") -> "list[list[float]]":
+    def to_obj(self) -> "list[list[float]]":
         return super().to_obj()
