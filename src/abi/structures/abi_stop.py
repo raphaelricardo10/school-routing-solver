@@ -19,8 +19,8 @@ class ABIStop(ctypes.Structure):
 
 class ABIStopList(ModelList):
     @staticmethod
-    def from_obj(stops: 'list[Stop]') -> 'list[ABIStop]':
+    def from_obj(stops: "list[Stop]") -> "list[ABIStop]":
         return ModelList.from_obj(stops, ABIStop)
 
-    def to_obj(self) -> 'list[Stop]':
+    def to_obj(self) -> "list[Stop]":
         return super().to_obj()

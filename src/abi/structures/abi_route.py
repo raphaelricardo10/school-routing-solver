@@ -15,7 +15,9 @@ class ABIRoute(ctypes.Structure):
     ]
 
     def from_obj(route: Route):
-        return ABIRoute(route.vehicle, route.stops, len(route.stops), route.total_distance)
+        return ABIRoute(
+            route.vehicle, route.stops, len(route.stops), route.total_distance
+        )
 
     def to_obj(self):
         return Route(self.vehicle, [], self.total_distance)
@@ -23,8 +25,8 @@ class ABIRoute(ctypes.Structure):
 
 class ABIVehicleList(ModelList):
     @staticmethod
-    def from_obj(routes: 'list[Route]') -> 'list[ABIRoute]':
+    def from_obj(routes: "list[Route]") -> "list[ABIRoute]":
         return ModelList.from_obj(routes, ABIRoute)
 
-    def to_obj(self) -> 'list[Route]':
+    def to_obj(self) -> "list[Route]":
         return super().to_obj()

@@ -20,8 +20,8 @@ class ABIVehicle(ctypes.Structure):
 
 class ABIVehicleList(ModelList):
     @staticmethod
-    def from_obj(vehicles: 'list[Vehicle]') -> 'list[ABIVehicle]':
+    def from_obj(vehicles: "list[Vehicle]") -> "list[ABIVehicle]":
         return ModelList.from_obj(vehicles, ABIVehicle)
 
-    def to_obj(self) -> 'list[Vehicle]':
+    def to_obj(self) -> "list[Vehicle]":
         return super().to_obj()

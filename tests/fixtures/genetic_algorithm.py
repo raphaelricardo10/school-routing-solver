@@ -2,6 +2,7 @@ from pytest import fixture
 
 from abi.libs.rust_solver_lib import GAParameters
 
+
 @fixture
 def genetic_algorithm_parameters():
     return GAParameters(
@@ -11,4 +12,3 @@ def genetic_algorithm_parameters():
         max_crossover_tries=20,
         max_generations=100,
     )
-

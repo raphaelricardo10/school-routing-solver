@@ -9,12 +9,12 @@ from abi.abi_function import ABIFunction
 from abi.shared_library import SharedLibrary
 from abi.structures.empty_buffer import EmptyBuffer
 
-from domain.stop import Stop
-from domain.vehicle import Vehicle
-
 from abi.structures.abi_stop import ABIStop
 from abi.structures.abi_vehicle import ABIVehicle, ABIVehicleList
 from abi.structures.abi_distance_matrix import ABIDistanceMatrix, ABIDistanceMatrixEntry
+
+from domain.stop import Stop
+from domain.vehicle import Vehicle
 
 
 class ABITestLib(SharedLibrary):
