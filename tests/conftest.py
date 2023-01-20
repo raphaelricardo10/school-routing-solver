@@ -1,5 +1,3 @@
-import pytest
-
 pytest_plugins = [
     "tests.fixtures.abi_test_lib",
     "tests.fixtures.domain",
