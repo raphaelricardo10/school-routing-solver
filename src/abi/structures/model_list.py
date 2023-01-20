@@ -9,10 +9,10 @@ U = TypeVar("U")
 
 class ModelList(UserList):
     @staticmethod
-    def from_obj(models: "list[U]", ABIModel: Type[T]) -> T:
-        c_models = [ABIModel.from_obj(x) for x in models]
+    def from_obj(models: "list[U]", abi_model: Type[T]) -> T:
+        c_models = [abi_model.from_obj(x) for x in models]
 
-        return (ABIModel * len(models))(*c_models)
+        return (abi_model * len(models))(*c_models)
 
     def to_obj(self) -> "list[U]":
         return [x.to_obj() for x in self]
