@@ -3,7 +3,7 @@ from __future__ import annotations
 import ctypes
 import numpy as np
 
-from src.routingGA import RoutingGA
+from routingGA import RoutingGA
 
 from abi.abi_function import ABIFunction
 from abi.shared_library import SharedLibrary
