@@ -1,0 +1,38 @@
+from domain.stop import Stop
+
+
+stops = [
+    Stop(0, 0, "Externato+Bastos+Silva+RJ"),  # depot
+    Stop(1, 1, "Rua Mutuapira, 191, RJ"),
+    Stop(2, 1, "Rua Jaime Bittencourt, 336, RJ"),
+    Stop(3, 1, "Rua Espedicionário Evilásio Rocha Assis, 85, RJ"),
+    Stop(4, 1, "R. João Antônio Leandro, 3473, RJ"),
+    Stop(5, 1, "R. Expedicionario Manuel E De Sousa, 414 - Fazenda dos Mineiros, São Gonçalo"),
+    Stop(6, 1, "R. Heitor Rodrigues, 91 - Itaúna"),
+    Stop(7, 1, "R. Laura Amélia de Souza, 239, Sao Goncalo"),
+    Stop(8, 1, "R. Liborina Silva, 372 - Itaúna"),
+    Stop(9, 1, "Estr. da Sapucaia, 694, Sao Goncalo"),
+    Stop(10, 1, "R. Santo André, 92-242 - Itaúna"),
+    Stop(11, 1, "R. Lopes de Moura, 38 - Nova Cidade"),
+    Stop(12, 1, "R. Ives Ribeiro, 110 - Nova Cidade"),
+    Stop(13, 1, "R. Petrópolis, 700 - Trindade"),
+    Stop(14, 1, "R. Petrópolis, 1189 - Trindade"),
+    Stop(15, 1, "Av. José Manna Júnior, 606, Sao Goncalo"),
+    Stop(16, 1, "R. Ilhéus, 147 - Trindade"),
+    Stop(17, 1, "R. Cuiabá, 661 - Trindade"),
+    Stop(18, 1, "R. Itaperuna, 358 - Trindade"),
+    Stop(19, 1, "R. Londrina, 104 - Trindade"),
+    Stop(20, 1, "AvenidaTrindade, 536 - Trindade, São Gonçalo, RJ"),
+    Stop(21, 1, "R. Recife, 1609 - Trindade"),
+    Stop(22, 1, "R. Uberlândia, 459 - Trindade"),
+    Stop(23, 1, "R. Albino de Almeida, 85 - Trindade"),
+    Stop(24, 1, "R. Barbacena, 17 - Trindade"),
+    Stop(25, 1, "Rua Rio de Janeiro, 751 - Trindade, São Gonçalo, RJ"),
+    Stop(26, 1, "R. Itaocara, 82 - Trindade"),
+    Stop(27, 1, "R. Guadalajara, 148-230 - Trindade"),
+    Stop(28, 1, "R. Peleuzio Araújo, 59 - Mutua"),
+    Stop(29, 1, "R. Manuel Pinheiro, 148 - São Miguel"),
+    Stop(30, 1, "R. Peleuzio Araújo, 88 - Mutua"),
+    Stop(31, 1, "R. Cel. Álvaro de Andrade, 25 - São Miguel"),
+    Stop(32, 1, "R. Tales de Andrade, 448-378 - Antonina"),
+]
