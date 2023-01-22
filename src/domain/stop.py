@@ -1,3 +1,4 @@
+from typing import Optional
 from dataclasses import dataclass
 
 
@@ -5,3 +6,4 @@ from dataclasses import dataclass
 class Stop:
     id: int
     usage: int
+    address: Optional[int] = None
