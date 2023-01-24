@@ -4,8 +4,9 @@ import pickle
 import numpy as np
 
 from datetime import datetime as dt
-from data.addresses import addresses
+from data.stops import stops
 
+addresses = [x.address for x in stops]
 
 class Destination:
     def __init__(self, address: str, distance: int) -> None:
