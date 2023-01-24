@@ -1,32 +1,16 @@
 import ctypes
 
-from domain.route import Route
-from abi.structures.abi_stop import ABIStop
-from abi.structures.abi_vehicle import ABIVehicle
-from abi.structures.model_list import ModelList
+from abi.structures.empty_buffer import EmptyBuffer
 
 
 class ABIRoute(ctypes.Structure):
     _fields_ = [
-        ("vehicle", ABIVehicle),
-        ("stops", ctypes.POINTER(ABIStop)),
-        ("number_of_stops", ctypes.c_uint32),
+        ("vehicle_id", ctypes.c_uint32),
+        ("stop_ids", ctypes.POINTER(ctypes.c_uint32)),
+        ("number_of_stops", ctypes.c_size_t),
         ("total_distance", ctypes.c_double),
     ]
 
-    def from_obj(route: Route):
-        return ABIRoute(
-            route.vehicle, route.stops, len(route.stops), route.total_distance
-        )
-
-    def to_obj(self):
-        return Route(self.vehicle, [], self.total_distance)
-
-
-class ABIVehicleList(ModelList):
-    @staticmethod
-    def from_obj(routes: "list[Route]") -> "list[ABIRoute]":
-        return ModelList.from_obj(routes, ABIRoute)
-
-    def to_obj(self) -> "list[Route]":
-        return super().to_obj()
+    def __init__(self, number_of_stops: int, *args, **kw) -> None:
+        stop_ids = EmptyBuffer(ctypes.c_uint32, number_of_stops)
+        super().__init__(stop_ids=stop_ids, *args, **kw)
