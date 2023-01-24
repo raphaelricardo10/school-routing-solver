@@ -3,6 +3,7 @@ from __future__ import annotations
 import ctypes
 
 from domain.stop import Stop
+from domain.route import Route
 from domain.vehicle import Vehicle
 
 from abi.abi_function import ABIFunction
@@ -59,8 +60,10 @@ class RustSolverLib(SharedLibrary):
         stops: "list[Stop]",
         distances: "list[list[float]]",
         parameters: GAParameters,
-    ) -> "list[ABIRoute]":
-        result: list[ABIRoute] = EmptyBuffer(ABIRoute, len(vehicles), number_of_stops=len(stops))
+    ) -> "list[Route]":
+        result: list[ABIRoute] = EmptyBuffer(
+            ABIRoute, len(vehicles), number_of_stops=len(stops)
+        )
 
         arg_sizes = ArgSizes(len(vehicles), len(stops), len(distances), len(vehicles))
 
@@ -74,4 +77,20 @@ class RustSolverLib(SharedLibrary):
             result,
         )
 
-        return result
+        stops_map = {x.id: x for x in stops}
+        result_map = {x.vehicle_id: x for x in result}
+
+        routes = []
+
+        for vehicle in vehicles:
+            result_entry = result_map[vehicle.id]
+
+            route_stops = [
+                stops_map[x] for x in result_entry.stop_ids[: result_entry.number_of_stops]
+            ]
+
+            vehicle.usage = sum(x.usage for x in route_stops)
+
+            routes.append(Route(vehicle, route_stops, result_entry.total_distance))
+
+        return routes
