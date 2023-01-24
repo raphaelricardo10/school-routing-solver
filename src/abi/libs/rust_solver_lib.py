@@ -21,6 +21,7 @@ class GAParameters(ctypes.Structure):
         ("population_size", ctypes.c_uint32),
         ("elite_size", ctypes.c_size_t),
         ("mutation_rate", ctypes.c_double),
+        ("local_search_rate", ctypes.c_double),
         ("max_crossover_tries", ctypes.c_int8),
         ("max_generations", ctypes.c_uint32),
     ]

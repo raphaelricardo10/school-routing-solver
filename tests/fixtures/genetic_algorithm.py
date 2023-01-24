@@ -9,6 +9,7 @@ def genetic_algorithm_parameters():
         population_size=10,
         elite_size=3,
         mutation_rate=0.05,
+        local_search_rate=0,
         max_crossover_tries=20,
         max_generations=100,
     )
