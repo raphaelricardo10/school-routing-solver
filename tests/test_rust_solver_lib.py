@@ -11,8 +11,6 @@ def test_can_get_solution_from_genetic_algorithm(
     genetic_algorithm_parameters: GAParameters,
     rust_solver_lib: RustSolverLib,
 ):
-    result = rust_solver_lib.run_genetic_solver(
+    rust_solver_lib.run_genetic_solver(
         vehicles, stops, distances, genetic_algorithm_parameters
     )
-
-    print(result)
