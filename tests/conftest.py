@@ -3,4 +3,5 @@ pytest_plugins = [
     "tests.fixtures.domain",
     "tests.fixtures.genetic_algorithm",
     "tests.fixtures.rust_solver_lib",
+    "tests.fixtures.grasp_algorithm"
 ]
