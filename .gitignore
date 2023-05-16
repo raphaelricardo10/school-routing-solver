@@ -4,3 +4,6 @@ main
 *.so
 .env
 venv/
+
+# Added by cargo
+/target
