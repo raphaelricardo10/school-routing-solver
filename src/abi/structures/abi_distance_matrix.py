@@ -8,7 +8,7 @@ class ABIDistanceMatrixEntry(ctypes.Structure):
     _fields_ = [
         ("from", ctypes.c_int32),
         ("to", ctypes.c_int32),
-        ("distance", ctypes.c_double),
+        ("distance", ctypes.c_float),
     ]
 
     @staticmethod

@@ -31,8 +31,8 @@ class ABITestLib(SharedLibrary):
                     ctypes.c_uint32,  # Point A
                     ctypes.c_uint32,  # Point B
                 ],
-                ctypes.c_double,
-            ),  # Return (distance)
+                ctypes.c_float,  # Return (distance)
+            ),
         ]
 
         super().__init__(path, functions)
