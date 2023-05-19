@@ -24,7 +24,7 @@ stops = [
     Stop(19, 1, "R. Londrina, 104 - Trindade, São Gonçalo - RJ, 24457-420"),
     Stop(20, 1, "AvenidaTrindade, 536 - Trindade, São Gonçalo, RJ"),
     Stop(21, 1, "R. Recife, 1609 - Trindade, São Gonçalo - RJ, 24457-550"),
-    Stop(22, 1, "R. Uberlândia, 459 - Trindade"),
+    Stop(22, 1, "R. Uberlândia, 459 - Trindade, São Gonçalo - RJ, 24457-110"),
     Stop(23, 1, "R. Albino de Almeida, 85 - Trindade"),
     Stop(24, 1, "R. Barbacena, 17 - Trindade, São Gonçalo - RJ, 24456-100"),
     Stop(25, 1, "Rua Rio de Janeiro, 751 - Trindade, São Gonçalo, RJ"),
