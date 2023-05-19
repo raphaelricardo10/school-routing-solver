@@ -154,7 +154,7 @@ class MapsAPI:
             for i, r in enumerate(marker_points)
         ]
         result_map = self.client.static_map(
-            center=waypoints[0],
+            center="-22.80349475995711,-43.026308869889974",
             scale=2,
             zoom=14,
             size=[640, 640],
